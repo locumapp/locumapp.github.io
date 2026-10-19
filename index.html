@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Locum: quem assume o seu posto enquanto você não está</title>
+<meta name="description" content="App para macOS que roda agents de IA em segundo plano. Revisa PR, lê o canal, cruza contexto e escreve o rascunho. Nada sai sem a sua aprovação.">
+<meta property="og:title" content="Locum">
+<meta property="og:description" content="Quem assume o seu posto enquanto você não está. Agents de IA na sua máquina, e nada sai sem você.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://locumapp.github.io/">
+<meta property="og:image" content="https://locumapp.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#121316">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Os tokens são os do tema escuro do app (app/renderer/src/index.css). */
+@font-face { font-family: "Inter"; src: url(fonts/inter.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-400.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-500.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+
+:root {
+  --background: oklch(0.155 0.004 275);
+  --foreground: oklch(0.93 0.004 275);
+  --card: oklch(0.185 0.005 275);
+  --popover: oklch(0.22 0.006 275);
+  --sidebar: oklch(0.135 0.004 275);
+  --primary: oklch(0.55 0.2 285);
+  --primary-hover: oklch(0.6 0.2 285);
+  --primary-texto: oklch(0.76 0.13 285);
+  --primary-foreground: oklch(0.985 0.005 285);
+  --secondary: oklch(0.235 0.006 275);
+  --muted: oklch(0.215 0.005 275);
+  --muted-foreground: oklch(0.67 0.01 275);
+  --accent: oklch(1 0 0 / 6%);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 11%);
+  --ring: oklch(0.6 0.19 285 / 70%);
+  --estado-ok: oklch(0.74 0.15 160);
+  --estado-aviso: oklch(0.8 0.14 80);
+  --estado-erro: oklch(0.68 0.19 22);
+  --estado-ocioso: oklch(0.5 0.01 275);
+  --sev-high: oklch(0.74 0.16 55);
+  --sev-medium: oklch(0.81 0.13 92);
+  --selo: #ed4952;
+  --radius: 8px;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--background); color: var(--foreground);
+  font: 400 16px/1.6 "Inter", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv11", "ss01"; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+.pular { position: absolute; left: -9999px; }
+.pular:focus { left: 16px; top: 12px; z-index: 10; background: var(--popover); padding: 8px 12px; }
+.mono { font-family: var(--mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted-foreground); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* Navegação */
+header.nav { position: sticky; top: 0; z-index: 5; background: oklch(0.155 0.004 275 / 82%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+.marca img { width: 26px; height: 26px; }
+.nav nav { display: flex; gap: 4px; margin-left: 8px; }
+.nav nav a { text-decoration: none; color: var(--muted-foreground); font-size: 14px; padding: 6px 10px; border-radius: 6px; transition: color .15s, background .15s; }
+.nav nav a:hover { color: var(--foreground); background: var(--accent); }
+.nav .espaco { flex: 1; }
+
+/* Botões: primário sólido, secundário com borda, como no app */
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--radius); font: 500 14px/1 "Inter", sans-serif; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background .15s, border-color .15s; white-space: nowrap; }
+.btn svg { width: 16px; height: 16px; }
+.btn-primario { background: var(--primary); color: var(--primary-foreground); }
+.btn-primario:hover { background: var(--primary-hover); }
+.btn-secundario { border-color: var(--input); color: var(--foreground); background: transparent; }
+.btn-secundario:hover { background: var(--accent); }
+.btn-grande { height: 44px; padding: 0 20px; font-size: 15px; }
+.kbd { display: inline-flex; align-items: center; min-width: 20px; height: 20px; padding: 0 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; font: 500 11px/1 var(--mono); color: var(--muted-foreground); background: var(--muted); justify-content: center; }
+
+/* Hero */
+.hero { padding: 88px 0 40px; text-align: center; }
+.selo-topo { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted-foreground); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px 4px 8px; margin-bottom: 28px; background: var(--card); }
+.ponto { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.ponto.ok { background: var(--estado-ok); } .ponto.aviso { background: var(--estado-aviso); } .ponto.erro { background: var(--estado-erro); } .ponto.ocioso { background: var(--estado-ocioso); } .ponto.selo { background: var(--selo); }
+h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; margin: 0 auto 20px; max-width: 14ch; text-wrap: balance; }
+.hero p.lead { font-size: clamp(17px, 2vw, 19px); color: var(--muted-foreground); max-width: 600px; margin: 0 auto 32px; text-wrap: pretty; }
+.acoes { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.versao-linha { margin-top: 14px; font-size: 13px; color: var(--muted-foreground); min-height: 21px; }
+
+/* Moldura das capturas reais do app */
+.vitrine { padding: 32px 0 96px; }
+figure { margin: 0; }
+.janela { max-width: 1120px; margin: 0 auto; border: 1px solid var(--border); border-radius: 12px; background: var(--sidebar); overflow: hidden; box-shadow: 0 40px 120px -40px oklch(0.55 0.2 285 / 35%), 0 0 0 1px oklch(0 0 0 / 40%); }
+.barra { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: var(--sidebar); border-bottom: 1px solid var(--border); }
+.barra i { width: 12px; height: 12px; border-radius: 50%; background: oklch(0.32 0.005 275); }
+.barra span { margin: 0 auto; color: var(--muted-foreground); font-size: 12px; padding-right: 52px; }
+.janela img, .tela img { display: block; width: 100%; height: auto; }
+.tela { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--sidebar); box-shadow: 0 30px 80px -40px oklch(0.55 0.2 285 / 30%); }
+.tela.retrato { width: 100%; max-width: 400px; justify-self: center; }
+.dupla-alta { grid-template-columns: minmax(0, 400px) 1fr; }
+
+/* Seções */
+section.bloco { padding: 88px 0; border-top: 1px solid var(--border); }
+.rotulo { font: 500 12px/1 var(--mono); color: var(--primary-texto); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 14px; }
+h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.12; letter-spacing: -.03em; font-weight: 600; margin: 0 0 14px; max-width: 22ch; text-wrap: balance; }
+.intro { color: var(--muted-foreground); max-width: 620px; margin: 0 0 44px; font-size: 17px; text-wrap: pretty; }
+
+.principios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.principios article { background: var(--card); padding: 28px; }
+.principios h3 { font-size: 16px; font-weight: 600; margin: 14px 0 8px; letter-spacing: -.01em; }
+.principios p { margin: 0; color: var(--muted-foreground); font-size: 15px; }
+.icone { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; background: var(--secondary); border: 1px solid var(--border); color: var(--primary-texto); }
+.icone svg { width: 18px; height: 18px; }
+
+.pecas { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
+.peca { display: grid; grid-template-columns: 44px 180px 1fr; gap: 16px; align-items: center; padding: 16px 22px; border-top: 1px solid var(--border); }
+.peca:first-child { border-top: 0; }
+.peca .icone { width: 32px; height: 32px; }
+.peca b { font-weight: 500; }
+.peca span { color: var(--muted-foreground); font-size: 15px; }
+
+.dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.terminal { border: 1px solid var(--border); border-radius: 12px; background: var(--sidebar); overflow: hidden; }
+.terminal .barra span { padding-right: 0; }
+.terminal pre { margin: 0; padding: 18px 20px; font: 400 13px/1.7 var(--mono); white-space: pre-wrap; color: oklch(0.85 0.006 275); }
+.terminal .eu { color: var(--primary-texto); }
+.terminal .ok { color: var(--estado-ok); }
+.terminal .cinza { color: var(--muted-foreground); }
+.lista-simples { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.lista-simples li { display: flex; gap: 12px; color: var(--muted-foreground); font-size: 15px; }
+.lista-simples li b { color: var(--foreground); font-weight: 500; }
+.lista-simples .ponto { margin-top: 9px; }
+
+.provedores { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.provedores span { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: 14px; color: oklch(0.85 0.006 275); }
+
+ol.passos { list-style: none; counter-reset: p; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+ol.passos li { counter-increment: p; border: 1px solid var(--border); background: var(--card); border-radius: 12px; padding: 22px; }
+ol.passos li::before { content: counter(p); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--secondary); border: 1px solid var(--border); font: 500 12px/1 var(--mono); color: var(--primary-texto); margin-bottom: 14px; }
+ol.passos b { display: block; font-weight: 500; margin-bottom: 6px; }
+ol.passos span { color: var(--muted-foreground); font-size: 14px; }
+
+.versoes { border: 1px solid var(--border); border-radius: 12px; background: var(--card); overflow: hidden; }
+.versao { padding: 18px 22px; border-top: 1px solid var(--border); }
+.versao:first-child { border-top: 0; }
+.versao header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.versao header b { font-weight: 600; }
+.versao header .muted { font-size: 13px; }
+.versao header a { margin-left: auto; font-size: 13px; color: var(--primary-texto); text-decoration: none; }
+.versao header a:hover { text-decoration: underline; }
+.versao ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted-foreground); font-size: 14px; }
+.versao h4 { margin: 12px 0 0; font-size: 12px; font-weight: 500; color: var(--foreground); }
+.versoes .vazio { padding: 22px; color: var(--muted-foreground); font-size: 14px; }
+
+footer { border-top: 1px solid var(--border); padding: 40px 0 56px; color: var(--muted-foreground); font-size: 13px; }
+footer .wrap { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+footer a { color: var(--muted-foreground); }
+footer a:hover { color: var(--foreground); }
+
+@media (max-width: 960px) {
+  .principios, ol.passos { grid-template-columns: 1fr 1fr; }
+  .dupla, .dupla-alta { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .nav nav { display: none; }
+  .principios, ol.passos { grid-template-columns: 1fr; }
+  .peca { grid-template-columns: 32px 1fr; }
+  .peca span { grid-column: 2; }
+  .hero { padding-top: 56px; }
+  section.bloco { padding: 64px 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .surge { opacity: 0; transform: translateY(12px); transition: opacity .4s ease-out, transform .4s ease-out; }
+  .surge.visivel { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- Ícones no traço do Lucide, o mesmo conjunto da interface do app. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="7" height="7" rx="1"/><path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.64l-19 6.5a.5.5 0 0 0-.03.94l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.93"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.17-2.83L3 3"/><path d="m15 9 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="marca" href="#"><img src="icon.svg" alt="" width="26" height="26">Locum</a>
+    <nav aria-label="Seções">
+      <a href="#como">Como funciona</a>
+      <a href="#fila">Fila</a>
+      <a href="#pecas">Peças</a>
+      <a href="#claude">Claude Code</a>
+      <a href="#instalar">Instalar</a>
+      <a href="#versoes">Versões</a>
+    </nav>
+    <span class="espaco"></span>
+    <a class="btn btn-primario baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="hero">
+    <div class="wrap">
+      <div class="selo-topo"><span class="ponto selo" aria-hidden="true"></span>Para macOS, Apple Silicon</div>
+      <h1>Quem assume o seu posto enquanto você não está.</h1>
+      <p class="lead">O Locum roda agents de IA em segundo plano, na sua máquina. Revisa o PR que chegou, lê o canal, cruza o contexto e escreve o rascunho. O que ele produz espera numa fila até você mandar.</p>
+      <div class="acoes">
+        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar para Mac</a>
+        <a class="btn btn-secundario btn-grande" href="#como">Como funciona</a>
+      </div>
+      <div class="versao-linha num" id="versao-linha" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="vitrine">
+    <div class="wrap">
+      <figure class="janela surge">
+        <div class="barra" aria-hidden="true"><i></i><i></i><i></i><span>Locum</span></div>
+        <img src="img/editor.jpg" width="2560" height="1720" alt="Editor de automação do Locum: a automação PR Review como fluxo de quatro nós, Triagem, Auditoria, Contexto de deploy e Comentar no PR, este marcado só com clique. À esquerda, a paleta de nós com Gatilhos, Agents e IA, Lógica e Apps.">
+      </figure>
+    </div>
+  </section>
+
+  <section class="bloco" id="como">
+    <div class="wrap">
+      <div class="rotulo">Como funciona</div>
+      <h2>Você descreve o trabalho uma vez. Ele roda quando precisa.</h2>
+      <p class="intro">Assistente de IA hoje é conversa: você abre, pede, espera e copia. O Locum inverte isso. O agent roda sozinho quando chega um PR, uma mensagem ou a hora marcada, e entrega o resultado onde você decide.</p>
+      <div class="principios">
+        <article class="surge">
+          <div class="icone"><svg aria-hidden="true"><use href="#i-laptop"/></svg></div>
+          <h3>Local primeiro</h3>
+          <p>Banco SQLite, credenciais no Keychain do macOS e execução na sua máquina. Não existe servidor do Locum no meio.</p>
+        </article>
+        <article class="surge">
+          <div class="icone"><svg aria-hidden="true"><use href="#i-shield"/></svg></div>
+          <h3>Nada sai sem você</h3>
+          <p>Comentar no GitHub, responder no Slack ou abrir um card passa por uma porta única de aprovação. Cada passo escolhe aprovar, rascunho ou automático.</p>
+        </article>
+        <article class="surge">
+          <div class="icone"><svg aria-hidden="true"><use href="#i-blocks"/></svg></div>
+          <h3>Você monta, ele não inventa</h3>
+          <p>O Locum entrega as peças e você decide como encaixar. Filtro, horário, modelo e texto ficam à vista no fluxo. Nada acontece que você não montou.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="fila">
+    <div class="wrap dupla">
+      <div>
+        <div class="rotulo">Fila</div>
+        <h2>O que vai sair, antes de sair.</h2>
+        <p class="intro" style="margin-bottom:28px">Cada resposta, review ou card que o agent prepara para na Fila com o texto exato que vai ser publicado. Você edita, aprova ou descarta. Também pelo teclado, e pela bandeja do Mac.</p>
+        <ul class="lista-simples">
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Texto editável.</b> O que você mudar é o que sai.</span></li>
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Modo por passo.</b> Aprovar, rascunho ou automático, escolhido em cada ação do fluxo.</span></li>
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Rastro completo.</b> Cada item leva para a execução que o produziu, com custo e saída de cada passo.</span></li>
+        </ul>
+      </div>
+      <figure class="tela surge"><img src="img/fila.jpg" width="1640" height="720" loading="lazy" alt="Item da Fila do Locum: uma resposta pronta para uma pergunta no Teams, em caixa editável, com os botões Aprovar e enviar e Descartar e o aviso de que nada sai antes do clique."></figure>
+    </div>
+  </section>
+
+  <section class="bloco" id="pecas">
+    <div class="wrap">
+      <div class="rotulo">Peças</div>
+      <h2>Seis peças, montadas do seu jeito.</h2>
+      <p class="intro">Cada automação é um fluxo de nós que você vê, configura e apaga. Os modelos prontos já vêm montados, e continuam editáveis.</p>
+      <div class="pecas">
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-zap"/></svg></div><b>Gatilhos</b><span>PR novo no GitHub, menção no Slack ou no Teams, horário marcado.</span></div>
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-bot"/></svg></div><b>Agents</b><span>Passos com modelo, ferramentas e orçamento próprios. Nascem de um formulário ou de uma descrição em texto.</span></div>
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-send"/></svg></div><b>Ações</b><span>Publicar a review, responder no canal, abrir a tarefa, chamar uma API. Todo efeito fora da máquina é um nó.</span></div>
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-wrench"/></svg></div><b>Ferramentas</b><span>Servidores MCP com OAuth de um clique: GitHub, Atlassian, Linear, Notion, Sentry, Figma e outros.</span></div>
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-split"/></svg></div><b>Lógica</b><span>Condição, filtro e desvio entre os passos, com o critério escrito no nó.</span></div>
+        <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-check"/></svg></div><b>Aprovação</b><span>A Fila mostra o texto ou o diff que vai sair, editável antes de publicar.</span></div>
+      </div>
+      <div class="provedores" aria-label="Provedores de modelo">
+        <span>Anthropic</span><span>OpenAI</span><span>Google</span><span>Ollama</span><span>OpenRouter</span><span>Qualquer endpoint compatível com OpenAI</span><span>Assinatura do Claude Code</span><span>Assinatura do ChatGPT via Codex</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="conexoes">
+    <div class="wrap dupla dupla-alta">
+      <figure class="tela retrato surge"><img src="img/conexoes.jpg" width="960" height="1720" loading="lazy" alt="Catálogo de conexões do Locum com Notion, Atlassian, Grafana, Figma, Shortcut, Linear, Asana, Miro, Canva, Vercel, Sentry, New Relic, Amplitude, PostHog e Intercom."></figure>
+      <div>
+        <div class="rotulo">Conexões</div>
+        <h2>Onde o seu trabalho já está.</h2>
+        <p class="intro">GitHub, Slack e Microsoft Teams para ler e responder. Servidores MCP remotos com OAuth de um clique para o resto, e qualquer servidor MCP seu fora do catálogo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="claude">
+    <div class="wrap dupla">
+      <div>
+        <div class="rotulo">Claude Code</div>
+        <h2>Monte conversando.</h2>
+        <p class="intro" style="margin-bottom:28px">O Locum tem servidor MCP próprio, ligado no Claude Code com um clique. Tudo que a tela configura, o MCP configura também.</p>
+        <ul class="lista-simples">
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Paridade com a tela.</b> Gatilho, agent, automação e iniciativa saem da conversa.</span></li>
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Iniciativas.</b> Uma frente de trabalho com contexto e servidores MCP próprios, aberta no Claude Code já com esse contexto.</span></li>
+          <li><span class="ponto ok" aria-hidden="true"></span><span><b>Sessões.</b> As conversas do Claude Code da máquina, com as que pararam no meio e as que esperam resposta.</span></li>
+        </ul>
+      </div>
+      <div class="terminal surge" role="img" aria-label="Exemplo de conversa no Claude Code criando uma automação de revisão de PR no Locum.">
+        <div class="barra" aria-hidden="true"><i></i><i></i><i></i><span>claude</span></div>
+<pre aria-hidden="true"><span class="eu">›</span> revisa todo PR novo do acme/api e me deixa a review na fila
+
+<span class="cinza">locum · list_agent_templates</span>
+<span class="cinza">locum · install_agent_template  pr-review</span>
+<span class="cinza">locum · set_trigger  github.pr  acme/api</span>
+
+<span class="ok">✓</span> Automação "Revisão de PR" criada.
+  Gatilho: PR aberto em acme/api
+  Ação: publicar review, modo <span class="eu">aprovar</span>
+  Nada sai sem você aprovar na Fila.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="instalar">
+    <div class="wrap">
+      <div class="rotulo">Instalar</div>
+      <h2>Quatro passos, uma vez só.</h2>
+      <p class="intro">Hoje há pacote para Mac com Apple Silicon. Depois de instalado, o Locum se atualiza sozinho a cada versão.</p>
+      <ol class="passos">
+        <li class="surge"><b>Baixe o .dmg</b><span>Pelo botão acima. As versões anteriores ficam na lista abaixo.</span></li>
+        <li class="surge"><b>Arraste para Aplicativos</b><span>Como qualquer app do Mac.</span></li>
+        <li class="surge"><b>Botão direito, Abrir</b><span>O Locum é assinado pelo próprio projeto, não pela Apple. O macOS pede essa confirmação só na primeira vez.</span></li>
+        <li class="surge"><b>Conecte e monte</b><span>Ligue o GitHub e um provedor de modelo, instale um modelo pronto e veja o primeiro item chegar na Fila.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="bloco" id="versoes">
+    <div class="wrap">
+      <div class="rotulo">Versões</div>
+      <h2>Todas ficam aqui.</h2>
+      <p class="intro">O app instalado busca a próxima sozinho. Se precisar voltar para uma anterior, baixe o .dmg dela.</p>
+      <div class="versoes" id="lista-versoes"><div class="vazio">Carregando as versões…</div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="marca" href="#"><img src="icon.svg" alt="" width="20" height="20">Locum</a>
+    <span>Feito para quem cuida de um time de engenharia.</span>
+    <span class="espaco" style="flex:1"></span>
+    <a href="https://github.com/locumapp/locumapp.github.io/issues/new">Reportar um problema</a>
+    <a href="https://github.com/locumapp/locumapp.github.io/releases">Releases</a>
+    <span>Fontes Inter e IBM Plex Mono, licença OFL</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const REPO = "locumapp/locumapp.github.io";
+  const RELEASES = `https://github.com/${REPO}/releases`;
+  const data = (iso) => new Date(iso).toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" });
+  const mb = (bytes) => `${(bytes / 1048576).toFixed(0)} MB`;
+  const el = (tag, attrs = {}, ...filhos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    for (const f of filhos) n.append(f);
+    return n;
+  };
+
+  // Notas em markdown simples: "## Seção" vira título, "- item" vira lista, o
+  // resto some. Links e hash de commit saem, o texto fica.
+  const notas = (corpo) => {
+    const frag = document.createDocumentFragment();
+    let ul = null;
+    for (const bruta of (corpo || "").split(/\r?\n/)) {
+      const linha = bruta.trim();
+      const titulo = linha.match(/^#{2,4}\s+(.*)/);
+      const item = linha.match(/^[-*]\s+(.*)/);
+      if (titulo && !/^\[?\d+\.\d+/.test(titulo[1])) { frag.append(el("h4", {}, titulo[1])); ul = null; }
+      else if (item) {
+        const texto = item[1].replace(/\(\[[0-9a-f]{7,}\]\([^)]*\)\)/g, "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/\*\*/g, "").trim();
+        if (!ul) { ul = el("ul"); frag.append(ul); }
+        ul.append(el("li", {}, texto));
+      }
+    }
+    return frag;
+  };
+
+  fetch(`https://api.github.com/repos/${REPO}/releases?per_page=30`, { headers: { Accept: "application/vnd.github+json" } })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((lista) => {
+      const versoes = lista.filter((r) => !r.draft && !r.prerelease);
+      const alvo = document.getElementById("lista-versoes");
+      alvo.textContent = "";
+      if (!versoes.length) {
+        alvo.append(el("div", { class: "vazio" }, "Nenhuma versão publicada ainda."));
+        return;
+      }
+      const dmgDe = (r) => r.assets.find((a) => a.name.endsWith(".dmg"));
+      const ultima = versoes[0];
+      const dmg = dmgDe(ultima);
+      if (dmg) document.querySelectorAll(".baixar").forEach((a) => (a.href = dmg.browser_download_url));
+      document.getElementById("versao-linha").textContent =
+        `Versão ${ultima.tag_name.replace(/^v/, "")} · ${data(ultima.published_at)}${dmg ? ` · ${mb(dmg.size)}` : ""}`;
+      for (const r of versoes) {
+        const d = dmgDe(r);
+        const cab = el("header", {}, el("b", { class: "num" }, r.tag_name.replace(/^v/, "")), el("span", { class: "muted num" }, data(r.published_at)));
+        if (d) cab.append(el("a", { href: d.browser_download_url }, `.dmg · ${mb(d.size)}`));
+        alvo.append(el("div", { class: "versao" }, cab, notas(r.body)));
+      }
+    })
+    .catch(() => {
+      const alvo = document.getElementById("lista-versoes");
+      alvo.textContent = "";
+      alvo.append(el("div", { class: "vazio" }, "Não deu para carregar a lista agora. ", el("a", { href: RELEASES }, "Ver todas no GitHub"), "."));
+    });
+
+  // Entrada suave ao rolar; sem movimento quando o sistema pede menos animação.
+  if (matchMedia("(prefers-reduced-motion: no-preference)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("visivel"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -10% 0px" });
+    document.querySelectorAll(".surge").forEach((n) => io.observe(n));
+  } else {
+    document.querySelectorAll(".surge").forEach((n) => n.classList.add("visivel"));
+  }
+})();
+</script>
+</body>
+</html>
