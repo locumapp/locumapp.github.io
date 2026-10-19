@@ -146,23 +146,31 @@ h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.12; letter-spacing: -.0
 .provedores { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
 .provedores span { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: 14px; color: oklch(0.85 0.006 275); }
 
-ol.passos { list-style: none; counter-reset: p; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-ol.passos li { counter-increment: p; border: 1px solid var(--border); background: var(--card); border-radius: 12px; padding: 22px; }
-ol.passos li::before { content: counter(p); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--secondary); border: 1px solid var(--border); font: 500 12px/1 var(--mono); color: var(--primary-texto); margin-bottom: 14px; }
-ol.passos b { display: block; font-weight: 500; margin-bottom: 6px; }
-ol.passos span { color: var(--muted-foreground); font-size: 14px; }
+.dupla-topo { align-items: start; }
+.dupla-topo .intro { margin-bottom: 28px; }
+ol.etapas { list-style: none; counter-reset: e; padding: 0; margin: 0; border-left: 1px solid var(--border); }
+ol.etapas li { counter-increment: e; position: relative; padding: 0 0 28px 32px; }
+ol.etapas li:last-child { padding-bottom: 0; }
+ol.etapas li::before { content: counter(e); position: absolute; left: -13px; top: 0; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--background); border: 1px solid var(--input); font: 500 12px/1 var(--mono); color: var(--primary-texto); }
+ol.etapas b { display: block; font-weight: 500; font-size: 17px; margin: 1px 0 6px; }
+ol.etapas span { color: var(--muted-foreground); font-size: 15px; }
+ol.etapas .mono { color: var(--foreground); }
 
-.versoes { border: 1px solid var(--border); border-radius: 12px; background: var(--card); overflow: hidden; }
-.versao { padding: 18px 22px; border-top: 1px solid var(--border); }
-.versao:first-child { border-top: 0; }
-.versao header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.versao header b { font-weight: 600; }
-.versao header .muted { font-size: 13px; }
-.versao header a { margin-left: auto; font-size: 13px; color: var(--primary-texto); text-decoration: none; }
-.versao header a:hover { text-decoration: underline; }
-.versao ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted-foreground); font-size: 14px; }
-.versao h4 { margin: 12px 0 0; font-size: 12px; font-weight: 500; color: var(--foreground); }
-.versoes .vazio { padding: 22px; color: var(--muted-foreground); font-size: 14px; }
+.linha-do-tempo { display: grid; gap: 0; }
+.versao { display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding: 22px 0; border-top: 1px solid var(--border); }
+.versao:first-child { border-top: 0; padding-top: 0; }
+.versao .quando b { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 17px; }
+.versao .quando b .ponto { background: var(--estado-ocioso); }
+.versao:first-child .quando b .ponto { background: var(--estado-ok); }
+.versao .quando span { display: block; color: var(--muted-foreground); font-size: 13px; margin: 2px 0 8px 16px; }
+.versao .quando a { margin-left: 16px; font-size: 13px; color: var(--primary-texto); text-decoration: none; }
+.versao .quando a:hover { text-decoration: underline; }
+.versao .mudancas { font-size: 15px; color: var(--muted-foreground); }
+.versao .mudancas ul { margin: 6px 0 0; padding-left: 18px; }
+.versao .mudancas h4 { margin: 14px 0 0; font-size: 12px; font-weight: 500; color: var(--foreground); text-transform: uppercase; letter-spacing: .04em; font-family: var(--mono); }
+.versao .mudancas h4:first-child { margin-top: 0; }
+.versao .mudancas p { margin: 0; }
+.linha-do-tempo .vazio { color: var(--muted-foreground); font-size: 15px; }
 
 footer { border-top: 1px solid var(--border); padding: 40px 0 56px; color: var(--muted-foreground); font-size: 13px; }
 footer .wrap { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
@@ -170,12 +178,13 @@ footer a { color: var(--muted-foreground); }
 footer a:hover { color: var(--foreground); }
 
 @media (max-width: 960px) {
-  .principios, ol.passos { grid-template-columns: 1fr 1fr; }
+  .principios { grid-template-columns: 1fr 1fr; }
   .dupla, .dupla-alta { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
   .nav nav { display: none; }
-  .principios, ol.passos { grid-template-columns: 1fr; }
+  .principios { grid-template-columns: 1fr; }
+  .versao { grid-template-columns: 1fr; gap: 10px; }
   .peca { grid-template-columns: 32px 1fr; }
   .peca span { grid-column: 2; }
   .hero { padding-top: 56px; }
@@ -211,10 +220,10 @@ footer a:hover { color: var(--foreground); }
     <nav aria-label="Seções">
       <a href="#como">Como funciona</a>
       <a href="#fila">Fila</a>
-      <a href="#pecas">Peças</a>
+      <a href="#montagem">Montagem</a>
       <a href="#claude">Claude Code</a>
       <a href="#instalar">Instalar</a>
-      <a href="#versoes">Versões</a>
+      <a href="#novidades">Novidades</a>
     </nav>
     <span class="espaco"></span>
     <a class="btn btn-primario baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar</a>
@@ -285,10 +294,10 @@ footer a:hover { color: var(--foreground); }
     </div>
   </section>
 
-  <section class="bloco" id="pecas">
+  <section class="bloco" id="montagem">
     <div class="wrap">
-      <div class="rotulo">Peças</div>
-      <h2>Seis peças, montadas do seu jeito.</h2>
+      <div class="rotulo">Montagem</div>
+      <h2>Seis tipos de nó. O fluxo é você quem desenha.</h2>
       <p class="intro">Cada automação é um fluxo de nós que você vê, configura e apaga. Os modelos prontos já vêm montados, e continuam editáveis.</p>
       <div class="pecas">
         <div class="peca surge"><div class="icone"><svg aria-hidden="true"><use href="#i-zap"/></svg></div><b>Gatilhos</b><span>PR novo no GitHub, menção no Slack ou no Teams, horário marcado.</span></div>
@@ -344,25 +353,27 @@ footer a:hover { color: var(--foreground); }
   </section>
 
   <section class="bloco" id="instalar">
-    <div class="wrap">
-      <div class="rotulo">Instalar</div>
-      <h2>Quatro passos, uma vez só.</h2>
-      <p class="intro">Hoje há pacote para Mac com Apple Silicon. Depois de instalado, o Locum se atualiza sozinho a cada versão.</p>
-      <ol class="passos">
-        <li class="surge"><b>Baixe o .dmg</b><span>Pelo botão acima. As versões anteriores ficam na lista abaixo.</span></li>
-        <li class="surge"><b>Arraste para Aplicativos</b><span>Como qualquer app do Mac.</span></li>
-        <li class="surge"><b>Botão direito, Abrir</b><span>O Locum é assinado pelo próprio projeto, não pela Apple. O macOS pede essa confirmação só na primeira vez.</span></li>
-        <li class="surge"><b>Conecte e monte</b><span>Ligue o GitHub e um provedor de modelo, instale um modelo pronto e veja o primeiro item chegar na Fila.</span></li>
+    <div class="wrap dupla dupla-topo">
+      <div>
+        <div class="rotulo">Instalar</div>
+        <h2>Do download à primeira aprovação.</h2>
+        <p class="intro">Funciona em Mac com Apple Silicon. As versões novas chegam pelo próprio app.</p>
+        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar o .dmg</a>
+      </div>
+      <ol class="etapas">
+        <li class="surge"><b>Instale</b><span>Abra o .dmg e leve o Locum para Aplicativos.</span></li>
+        <li class="surge"><b>Libere a primeira abertura</b><span>O Locum ainda não tem certificado de desenvolvedor da Apple, então o Gatekeeper barra o primeiro clique duplo. Clique no app com o botão direito, escolha <span class="mono">Abrir</span> e confirme. Daí em diante ele abre normal.</span></li>
+        <li class="surge"><b>Monte a primeira automação</b><span>Conecte o GitHub e um provedor de modelo, instale o modelo pronto de revisão de PR e espere o primeiro item aparecer na Fila.</span></li>
       </ol>
     </div>
   </section>
 
-  <section class="bloco" id="versoes">
+  <section class="bloco" id="novidades">
     <div class="wrap">
-      <div class="rotulo">Versões</div>
-      <h2>Todas ficam aqui.</h2>
-      <p class="intro">O app instalado busca a próxima sozinho. Se precisar voltar para uma anterior, baixe o .dmg dela.</p>
-      <div class="versoes" id="lista-versoes"><div class="vazio">Carregando as versões…</div></div>
+      <div class="rotulo">Novidades</div>
+      <h2>O que mudou, versão por versão.</h2>
+      <p class="intro">O Locum procura versão nova sozinho e mostra as notas antes de atualizar. Precisa de uma versão específica? O .dmg de cada uma está na linha dela.</p>
+      <div class="linha-do-tempo" id="lista-versoes"><div class="vazio">Buscando as versões publicadas…</div></div>
     </div>
   </section>
 </main>
@@ -417,7 +428,7 @@ footer a:hover { color: var(--foreground); }
       const alvo = document.getElementById("lista-versoes");
       alvo.textContent = "";
       if (!versoes.length) {
-        alvo.append(el("div", { class: "vazio" }, "Nenhuma versão publicada ainda."));
+        alvo.append(el("div", { class: "vazio" }, "A primeira versão pública sai em breve."));
         return;
       }
       const dmgDe = (r) => r.assets.find((a) => a.name.endsWith(".dmg"));
@@ -426,17 +437,21 @@ footer a:hover { color: var(--foreground); }
       if (dmg) document.querySelectorAll(".baixar").forEach((a) => (a.href = dmg.browser_download_url));
       document.getElementById("versao-linha").textContent =
         `Versão ${ultima.tag_name.replace(/^v/, "")} · ${data(ultima.published_at)}${dmg ? ` · ${mb(dmg.size)}` : ""}`;
-      for (const r of versoes) {
+      versoes.forEach((r, i) => {
         const d = dmgDe(r);
-        const cab = el("header", {}, el("b", { class: "num" }, r.tag_name.replace(/^v/, "")), el("span", { class: "muted num" }, data(r.published_at)));
-        if (d) cab.append(el("a", { href: d.browser_download_url }, `.dmg · ${mb(d.size)}`));
-        alvo.append(el("div", { class: "versao" }, cab, notas(r.body)));
-      }
+        const quando = el("div", { class: "quando" },
+          el("b", { class: "num" }, el("span", { class: "ponto", "aria-hidden": "true" }), r.tag_name.replace(/^v/, "")),
+          el("span", { class: "num" }, i === 0 ? `${data(r.published_at)} · atual` : data(r.published_at)));
+        if (d) quando.append(el("a", { href: d.browser_download_url }, `Baixar · ${mb(d.size)}`));
+        const mudancas = el("div", { class: "mudancas" }, notas(r.body));
+        if (!mudancas.childNodes.length) mudancas.append(el("p", {}, "Correções e ajustes internos."));
+        alvo.append(el("article", { class: "versao" }, quando, mudancas));
+      });
     })
     .catch(() => {
       const alvo = document.getElementById("lista-versoes");
       alvo.textContent = "";
-      alvo.append(el("div", { class: "vazio" }, "Não deu para carregar a lista agora. ", el("a", { href: RELEASES }, "Ver todas no GitHub"), "."));
+      alvo.append(el("div", { class: "vazio" }, "A lista não carregou. ", el("a", { href: RELEASES }, "Abrir as versões no GitHub"), "."));
     });
 
   // Entrada suave ao rolar; sem movimento quando o sistema pede menos animação.
