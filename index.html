@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Locum: quem assume o seu posto enquanto você não está</title>
-<meta name="description" content="App para macOS que roda agents de IA em segundo plano. Revisa PR, lê o canal, cruza contexto e escreve o rascunho. Nada sai sem a sua aprovação.">
+<meta name="description" content="App para macOS e Windows que roda agents de IA em segundo plano. Revisa PR, lê o canal, cruza contexto e escreve o rascunho. Nada sai sem a sua aprovação.">
 <meta property="og:title" content="Locum">
 <meta property="og:description" content="Quem assume o seu posto enquanto você não está. Agents de IA na sua máquina, e nada sai sem você.">
 <meta property="og:type" content="website">
@@ -98,6 +98,8 @@ h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; letter-spacing: -.035
 .hero p.lead { font-size: clamp(17px, 2vw, 19px); color: var(--muted-foreground); max-width: 600px; margin: 0 auto 32px; text-wrap: pretty; }
 .acoes { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .versao-linha { margin-top: 14px; font-size: 13px; color: var(--muted-foreground); min-height: 21px; }
+.versao-linha a { color: var(--primary-texto); text-decoration: none; }
+.versao-linha a:hover { text-decoration: underline; }
 
 /* Moldura das capturas reais do app */
 .vitrine { padding: 32px 0 96px; }
@@ -163,7 +165,7 @@ ol.etapas .mono { color: var(--foreground); }
 .versao .quando b .ponto { background: var(--estado-ocioso); }
 .versao:first-child .quando b .ponto { background: var(--estado-ok); }
 .versao .quando span { display: block; color: var(--muted-foreground); font-size: 13px; margin: 2px 0 8px 16px; }
-.versao .quando a { margin-left: 16px; font-size: 13px; color: var(--primary-texto); text-decoration: none; }
+.versao .quando a { display: block; margin: 0 0 2px 16px; font-size: 13px; color: var(--primary-texto); text-decoration: none; }
 .versao .quando a:hover { text-decoration: underline; }
 .versao .mudancas { font-size: 15px; color: var(--muted-foreground); }
 .versao .mudancas ul { margin: 6px 0 0; padding-left: 18px; }
@@ -233,11 +235,11 @@ footer a:hover { color: var(--foreground); }
 <main id="conteudo">
   <section class="hero">
     <div class="wrap">
-      <div class="selo-topo"><span class="ponto selo" aria-hidden="true"></span>Para macOS, Apple Silicon</div>
+      <div class="selo-topo"><span class="ponto selo" aria-hidden="true"></span>Para macOS (Apple Silicon) e Windows 64 bits</div>
       <h1>Quem assume o seu posto enquanto você não está.</h1>
       <p class="lead">O Locum roda agents de IA em segundo plano, na sua máquina. Revisa o PR que chegou, lê o canal, cruza o contexto e escreve o rascunho. O que ele produz espera numa fila até você mandar.</p>
       <div class="acoes">
-        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar para Mac</a>
+        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar para Mac" data-win="Baixar para Windows">Baixar para Mac</span></a>
         <a class="btn btn-secundario btn-grande" href="#como">Como funciona</a>
       </div>
       <div class="versao-linha num" id="versao-linha" aria-live="polite"></div>
@@ -262,7 +264,7 @@ footer a:hover { color: var(--foreground); }
         <article class="surge">
           <div class="icone"><svg aria-hidden="true"><use href="#i-laptop"/></svg></div>
           <h3>Local primeiro</h3>
-          <p>Banco SQLite, credenciais no Keychain do macOS e execução na sua máquina. Não existe servidor do Locum no meio.</p>
+          <p>Banco SQLite, credenciais no cofre do sistema (Keychain no Mac, DPAPI no Windows) e execução na sua máquina. Não existe servidor do Locum no meio.</p>
         </article>
         <article class="surge">
           <div class="icone"><svg aria-hidden="true"><use href="#i-shield"/></svg></div>
@@ -357,12 +359,12 @@ footer a:hover { color: var(--foreground); }
       <div>
         <div class="rotulo">Instalar</div>
         <h2>Do download à primeira aprovação.</h2>
-        <p class="intro">Funciona em Mac com Apple Silicon. As versões novas chegam pelo próprio app.</p>
-        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar o .dmg</a>
+        <p class="intro">Funciona em Mac com Apple Silicon e no Windows 64 bits, que ainda está em teste. As versões novas chegam pelo próprio app.</p>
+        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar o .dmg" data-win="Baixar o .exe">Baixar o .dmg</span></a>
       </div>
       <ol class="etapas">
-        <li class="surge"><b>Instale</b><span>Abra o .dmg e leve o Locum para Aplicativos.</span></li>
-        <li class="surge"><b>Libere a primeira abertura</b><span>O Locum ainda não tem certificado de desenvolvedor da Apple, então o Gatekeeper barra o primeiro clique duplo. Clique no app com o botão direito, escolha <span class="mono">Abrir</span> e confirme. Daí em diante ele abre normal.</span></li>
+        <li class="surge"><b>Instale</b><span>No Mac, abra o .dmg e leve o Locum para Aplicativos. No Windows, rode o instalador .exe; ele instala só para o seu usuário, sem pedir administrador.</span></li>
+        <li class="surge"><b>Libere a primeira abertura</b><span>O Locum ainda não tem certificado de desenvolvedor da Apple, então o Gatekeeper barra o primeiro clique duplo. Clique no app com o botão direito, escolha <span class="mono">Abrir</span> e confirme. No Windows, o SmartScreen avisa pelo mesmo motivo: clique em <span class="mono">Mais informações</span> e depois em <span class="mono">Executar assim mesmo</span>. Daí em diante ele abre normal.</span></li>
         <li class="surge"><b>Monte a primeira automação</b><span>Conecte o GitHub e um provedor de modelo, instale o modelo pronto de revisão de PR e espere o primeiro item aparecer na Fila.</span></li>
       </ol>
     </div>
@@ -372,7 +374,7 @@ footer a:hover { color: var(--foreground); }
     <div class="wrap">
       <div class="rotulo">Novidades</div>
       <h2>O que mudou, versão por versão.</h2>
-      <p class="intro">O Locum procura versão nova sozinho e mostra as notas antes de atualizar. Precisa de uma versão específica? O .dmg de cada uma está na linha dela.</p>
+      <p class="intro">O Locum procura versão nova sozinho e mostra as notas antes de atualizar. Precisa de uma versão específica? O .dmg e o .exe de cada uma estão na linha dela.</p>
       <div class="linha-do-tempo" id="lista-versoes"><div class="vazio">Buscando as versões publicadas…</div></div>
     </div>
   </section>
@@ -431,18 +433,39 @@ footer a:hover { color: var(--foreground); }
         alvo.append(el("div", { class: "vazio" }, "A primeira versão pública sai em breve."));
         return;
       }
-      const dmgDe = (r) => r.assets.find((a) => a.name.endsWith(".dmg"));
+      // Cada sistema tem o seu instalador; o botão principal segue o sistema de
+      // quem visita, e o outro fica num link ao lado da versão.
+      const instaladores = (r) => ({
+        mac: r.assets.find((a) => a.name.endsWith(".dmg")),
+        win: r.assets.find((a) => a.name.endsWith(".exe")),
+      });
+      const nomes = { mac: "Mac", win: "Windows" };
+      const windows = navigator.userAgentData?.platform === "Windows" || /Windows/.test(navigator.userAgent);
+      const daqui = windows ? "win" : "mac";
+      const outro = windows ? "mac" : "win";
       const ultima = versoes[0];
-      const dmg = dmgDe(ultima);
-      if (dmg) document.querySelectorAll(".baixar").forEach((a) => (a.href = dmg.browser_download_url));
-      document.getElementById("versao-linha").textContent =
-        `Versão ${ultima.tag_name.replace(/^v/, "")} · ${data(ultima.published_at)}${dmg ? ` · ${mb(dmg.size)}` : ""}`;
+      const atuais = instaladores(ultima);
+      const principal = atuais[daqui] ?? atuais[outro];
+      const sistema = atuais[daqui] ? daqui : outro;
+      if (principal) document.querySelectorAll(".baixar").forEach((a) => {
+        a.href = principal.browser_download_url;
+        const rotulo = a.querySelector("[data-mac]");
+        if (rotulo) rotulo.textContent = rotulo.dataset[sistema];
+      });
+      const linha = document.getElementById("versao-linha");
+      linha.textContent =
+        `Versão ${ultima.tag_name.replace(/^v/, "")} · ${data(ultima.published_at)}${principal ? ` · ${mb(principal.size)}` : ""}`;
+      const alternativo = sistema === daqui ? atuais[outro] : null;
+      if (alternativo) linha.append(" · ", el("a", { href: alternativo.browser_download_url }, `Também para ${nomes[outro]}`));
       versoes.forEach((r, i) => {
-        const d = dmgDe(r);
+        const deste = instaladores(r);
         const quando = el("div", { class: "quando" },
           el("b", { class: "num" }, el("span", { class: "ponto", "aria-hidden": "true" }), r.tag_name.replace(/^v/, "")),
           el("span", { class: "num" }, i === 0 ? `${data(r.published_at)} · atual` : data(r.published_at)));
-        if (d) quando.append(el("a", { href: d.browser_download_url }, `Baixar · ${mb(d.size)}`));
+        for (const so of ["mac", "win"]) {
+          const a = deste[so];
+          if (a) quando.append(el("a", { href: a.browser_download_url }, `${nomes[so]} · ${mb(a.size)}`));
+        }
         const mudancas = el("div", { class: "mudancas" }, notas(r.body));
         if (!mudancas.childNodes.length) mudancas.append(el("p", {}, "Correções e ajustes internos."));
         alvo.append(el("article", { class: "versao" }, quando, mudancas));
