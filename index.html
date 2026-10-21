@@ -240,7 +240,7 @@ footer a:hover { color: var(--foreground); }
       <p class="lead">O Locum roda agents de IA em segundo plano, na sua máquina. Revisa o PR que chegou, lê o canal, cruza o contexto e escreve o rascunho. O que ele produz espera numa fila até você mandar.</p>
       <div class="acoes">
         <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar para Mac" data-win="Baixar para Windows">Baixar para Mac</span></a>
-        <a class="btn btn-secundario btn-grande" href="#como">Como funciona</a>
+        <a class="btn btn-secundario btn-grande baixar-outro" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar para Mac" data-win="Baixar para Windows">Baixar para Windows</span></a>
       </div>
       <div class="versao-linha num" id="versao-linha" aria-live="polite"></div>
     </div>
@@ -360,7 +360,10 @@ footer a:hover { color: var(--foreground); }
         <div class="rotulo">Instalar</div>
         <h2>Do download à primeira aprovação.</h2>
         <p class="intro">Funciona em Mac com Apple Silicon e no Windows 64 bits, que ainda está em teste. As versões novas chegam pelo próprio app.</p>
-        <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar o .dmg" data-win="Baixar o .exe">Baixar o .dmg</span></a>
+        <div class="acoes" style="justify-content:flex-start">
+          <a class="btn btn-primario btn-grande baixar" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar o .dmg" data-win="Baixar o .exe">Baixar o .dmg</span></a>
+          <a class="btn btn-secundario btn-grande baixar-outro" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg><span data-mac="Baixar o .dmg" data-win="Baixar o .exe">Baixar o .exe</span></a>
+        </div>
       </div>
       <ol class="etapas">
         <li class="surge"><b>Instale</b><span>No Mac, abra o .dmg e leve o Locum para Aplicativos. No Windows, rode o instalador .exe; ele instala só para o seu usuário, sem pedir administrador.</span></li>
@@ -434,7 +437,7 @@ footer a:hover { color: var(--foreground); }
         return;
       }
       // Cada sistema tem o seu instalador; o botão principal segue o sistema de
-      // quem visita, e o outro fica num link ao lado da versão.
+      // quem visita, e o do outro sistema fica ao lado, como secundário.
       const instaladores = (r) => ({
         mac: r.assets.find((a) => a.name.endsWith(".dmg")),
         win: r.assets.find((a) => a.name.endsWith(".exe")),
@@ -456,7 +459,12 @@ footer a:hover { color: var(--foreground); }
       linha.textContent =
         `Versão ${ultima.tag_name.replace(/^v/, "")} · ${data(ultima.published_at)}${principal ? ` · ${mb(principal.size)}` : ""}`;
       const alternativo = sistema === daqui ? atuais[outro] : null;
-      if (alternativo) linha.append(" · ", el("a", { href: alternativo.browser_download_url }, `Também para ${nomes[outro]}`));
+      document.querySelectorAll(".baixar-outro").forEach((a) => {
+        if (!alternativo) return a.remove();
+        a.href = alternativo.browser_download_url;
+        const rotulo = a.querySelector("[data-mac]");
+        rotulo.textContent = rotulo.dataset[outro];
+      });
       versoes.forEach((r, i) => {
         const deste = instaladores(r);
         const quando = el("div", { class: "quando" },
