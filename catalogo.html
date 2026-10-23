@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo do Locum: templates, pacotes e conexões</title>
+<meta name="description" content="Templates de automação, pacotes e tipos de conexão publicados no catálogo público do Locum, com o que cada um pede para rodar.">
+<meta property="og:title" content="Catálogo do Locum">
+<meta property="og:description" content="Templates, pacotes e conexões do catálogo público do Locum, com o que cada um pede para rodar.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://locumapp.github.io/catalogo.html">
+<meta property="og:image" content="https://locumapp.github.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#121316">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Os tokens e os componentes são os mesmos da index.html, que segue o tema escuro do app. */
+@font-face { font-family: "Inter"; src: url(fonts/inter.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-400.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-500.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+
+:root {
+  --background: oklch(0.155 0.004 275);
+  --foreground: oklch(0.93 0.004 275);
+  --card: oklch(0.185 0.005 275);
+  --popover: oklch(0.22 0.006 275);
+  --sidebar: oklch(0.135 0.004 275);
+  --primary: oklch(0.55 0.2 285);
+  --primary-hover: oklch(0.6 0.2 285);
+  --primary-texto: oklch(0.76 0.13 285);
+  --primary-foreground: oklch(0.985 0.005 285);
+  --secondary: oklch(0.235 0.006 275);
+  --muted: oklch(0.215 0.005 275);
+  --muted-foreground: oklch(0.67 0.01 275);
+  --accent: oklch(1 0 0 / 6%);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 11%);
+  --ring: oklch(0.6 0.19 285 / 70%);
+  --estado-ok: oklch(0.74 0.15 160);
+  --estado-aviso: oklch(0.8 0.14 80);
+  --estado-erro: oklch(0.68 0.19 22);
+  --estado-ocioso: oklch(0.5 0.01 275);
+  --radius: 8px;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--background); color: var(--foreground);
+  font: 400 16px/1.6 "Inter", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv11", "ss01"; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+.pular { position: absolute; left: -9999px; }
+.pular:focus { left: 16px; top: 12px; z-index: 10; background: var(--popover); padding: 8px 12px; }
+.mono { font-family: var(--mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted-foreground); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.link { color: var(--primary-texto); text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+/* Navegação */
+header.nav { position: sticky; top: 0; z-index: 5; background: oklch(0.155 0.004 275 / 82%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+.marca img { width: 26px; height: 26px; }
+.nav nav { display: flex; gap: 4px; margin-left: 8px; }
+.nav nav a { text-decoration: none; color: var(--muted-foreground); font-size: 14px; padding: 6px 10px; border-radius: 6px; transition: color .15s, background .15s; }
+.nav nav a:hover, .nav nav a[aria-current="page"] { color: var(--foreground); background: var(--accent); }
+.nav .espaco { flex: 1; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--radius); font: 500 14px/1 "Inter", sans-serif; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: background .15s, border-color .15s; white-space: nowrap; }
+.btn svg { width: 16px; height: 16px; }
+.btn-primario { background: var(--primary); color: var(--primary-foreground); }
+.btn-primario:hover { background: var(--primary-hover); }
+.btn-secundario { border-color: var(--input); color: var(--foreground); background: transparent; }
+.btn-secundario:hover { background: var(--accent); }
+
+/* Topo da página */
+.topo { padding: 72px 0 48px; }
+.rotulo { font: 500 12px/1 var(--mono); color: var(--primary-texto); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 14px; }
+h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; margin: 0 0 18px; max-width: 18ch; text-wrap: balance; }
+.topo p.lead { font-size: clamp(17px, 2vw, 19px); color: var(--muted-foreground); max-width: 640px; margin: 0 0 24px; text-wrap: pretty; }
+.resumo { font-size: 14px; color: var(--muted-foreground); min-height: 22px; margin: 0; }
+.atalhos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.atalhos a { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: 14px; color: oklch(0.85 0.006 275); text-decoration: none; }
+.atalhos a:hover { background: var(--secondary); }
+.atalhos .contagem { color: var(--muted-foreground); margin-left: 6px; }
+
+/* Seções */
+section.bloco { padding: 72px 0; border-top: 1px solid var(--border); }
+h2 { font-size: clamp(26px, 3.2vw, 34px); line-height: 1.12; letter-spacing: -.03em; font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
+.intro { color: var(--muted-foreground); max-width: 640px; margin: 0 0 32px; font-size: 17px; text-wrap: pretty; }
+.vazio { color: var(--muted-foreground); font-size: 15px; border: 1px dashed var(--input); border-radius: 12px; padding: 22px 24px; margin: 0; }
+.vazio.erro { border-style: solid; border-color: oklch(0.68 0.19 22 / 40%); color: var(--foreground); }
+
+/* Itens do catálogo */
+.itens { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.item h3 { font-size: 18px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
+.item .meta { margin: 4px 0 0; font-size: 13px; color: var(--muted-foreground); }
+.item .meta .mono { white-space: nowrap; }
+.item .descricao { margin: 0; color: oklch(0.85 0.006 275); font-size: 15px; text-wrap: pretty; }
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; }
+.chips li { border: 1px solid var(--border); background: var(--muted); border-radius: 999px; padding: 2px 10px; font: 400 12px/1.7 var(--mono); color: var(--muted-foreground); }
+.pede { margin: 0; border-top: 1px solid var(--border); padding-top: 14px; display: grid; gap: 10px; }
+.pede div { display: grid; grid-template-columns: 150px 1fr; gap: 12px; }
+.pede dt { font: 500 12px/1.9 var(--mono); color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+.pede dd { margin: 0; font-size: 14px; }
+.pede dd ul { margin: 0; padding-left: 18px; }
+.pede .mono { color: oklch(0.85 0.006 275); }
+.item .fonte { margin-top: auto; font-size: 13px; }
+
+/* Como publicar */
+.dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+ol.etapas { list-style: none; counter-reset: e; padding: 0; margin: 0; border-left: 1px solid var(--border); }
+ol.etapas li { counter-increment: e; position: relative; padding: 0 0 28px 32px; }
+ol.etapas li:last-child { padding-bottom: 0; }
+ol.etapas li::before { content: counter(e); position: absolute; left: -13px; top: 0; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--background); border: 1px solid var(--input); font: 500 12px/1 var(--mono); color: var(--primary-texto); }
+ol.etapas b { display: block; font-weight: 500; font-size: 17px; margin: 1px 0 6px; }
+ol.etapas span { color: var(--muted-foreground); font-size: 15px; }
+ol.etapas .mono { color: var(--foreground); }
+.acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+
+footer { border-top: 1px solid var(--border); padding: 40px 0 56px; color: var(--muted-foreground); font-size: 13px; }
+footer .wrap { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+footer a { color: var(--muted-foreground); }
+footer a:hover { color: var(--foreground); }
+
+@media (max-width: 960px) {
+  .itens, .dupla { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .nav nav { display: none; }
+  .topo { padding-top: 48px; }
+  section.bloco { padding: 56px 0; }
+  .pede div { grid-template-columns: 1fr; gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="marca" href="./"><img src="icon.svg" alt="" width="26" height="26">Locum</a>
+    <nav aria-label="Seções">
+      <a href="./#como">Como funciona</a>
+      <a href="./#fila">Fila</a>
+      <a href="./#montagem">Montagem</a>
+      <a href="./#claude">Claude Code</a>
+      <a href="./#instalar">Instalar</a>
+      <a href="./#novidades">Novidades</a>
+      <a href="catalogo.html" aria-current="page">Catálogo</a>
+    </nav>
+    <span class="espaco"></span>
+    <a class="btn btn-primario" href="https://github.com/locumapp/locumapp.github.io/releases/latest"><svg aria-hidden="true"><use href="#i-download"/></svg>Baixar</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="topo">
+    <div class="wrap">
+      <div class="rotulo">Catálogo</div>
+      <h1>O que dá para instalar no Locum.</h1>
+      <p class="lead">Templates de automação, pacotes e tipos de conexão do catálogo público. A lista vem do mesmo índice que o app lê, com o que cada item pede para rodar.</p>
+      <p class="resumo num" id="resumo" aria-live="polite">Buscando o catálogo publicado…</p>
+      <noscript><p class="resumo">Esta lista precisa de JavaScript. O índice também está no <a class="link" href="https://github.com/locumapp/locum-marketplace/tree/index">GitHub</a>.</p></noscript>
+      <nav class="atalhos" aria-label="Tipos de item">
+        <a href="#templates">Templates<span class="contagem num" data-contagem="template"></span></a>
+        <a href="#pacotes">Pacotes<span class="contagem num" data-contagem="package"></span></a>
+        <a href="#conexoes">Conexões<span class="contagem num" data-contagem="connection"></span></a>
+        <a href="#publicar">Como publicar</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="bloco" id="templates" aria-labelledby="titulo-templates">
+    <div class="wrap">
+      <h2 id="titulo-templates">Templates</h2>
+      <p class="intro">Automação já montada, com os nós à vista e editáveis. O que é seu, como repositórios, canais e conversas, você escolhe na instalação.</p>
+      <div data-lista="template" aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="pacotes" aria-labelledby="titulo-pacotes">
+    <div class="wrap">
+      <h2 id="titulo-pacotes">Pacotes</h2>
+      <p class="intro">Automação que alguém exportou do Locum e compartilhou, já limpa de dado de empresa.</p>
+      <div data-lista="package" aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="conexoes" aria-labelledby="titulo-conexoes">
+    <div class="wrap">
+      <h2 id="titulo-conexoes">Conexões</h2>
+      <p class="intro">Tipos de conexão descritos só como dado: o servidor, o jeito de entrar e o que ele deixa ler e escrever. Nenhum traz código para rodar na sua máquina.</p>
+      <div data-lista="connection" aria-busy="true"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="publicar" aria-labelledby="titulo-publicar">
+    <div class="wrap dupla">
+      <div>
+        <div class="rotulo">Contribuir</div>
+        <h2 id="titulo-publicar">Como publicar uma conexão ou template</h2>
+        <p class="intro">Qualquer pessoa pode propor um item. Ele entra por pull request no repositório do catálogo, passa pela validação automática e pela revisão de quem mantém, e só depois do merge chega ao índice que o app lê.</p>
+        <div class="acoes">
+          <a class="btn btn-primario" href="https://github.com/locumapp/locum-marketplace/blob/main/CONTRIBUTING.pt-BR.md">Guia de contribuição</a>
+          <a class="btn btn-secundario" href="https://github.com/locumapp/locum-marketplace">Repositório do catálogo</a>
+        </div>
+      </div>
+      <ol class="etapas">
+        <li><b>Prepare o arquivo</b><span>Cada item é um JSON em <span class="mono">templates/</span>, <span class="mono">packages/</span> ou <span class="mono">connections/</span>, com nome e descrição em inglês e em português. Template e pacote saem do próprio app, pela exportação, que já limpa o que é seu. Conexão é só dado: servidor https, jeitos de entrar, campos, gatilhos e ações que o app já conhece.</span></li>
+        <li><b>Confira o que não pode</b><span>Nada de comando, <span class="mono">npx</span>, <span class="mono">uvx</span> ou script baixado. Nomes de pessoa, time, canal, host e repositório precisam ser genéricos. Os ids das conexões oficiais, como <span class="mono">github</span> e <span class="mono">slack</span>, só quem mantém publica.</span></li>
+        <li><b>Rode o validador</b><span>Com Node 20 ou mais novo, <span class="mono">npm ci --ignore-scripts</span>, <span class="mono">npm run validate</span> e <span class="mono">npm test</span>. Cada erro diz o arquivo e o campo.</span></li>
+        <li><b>Abra o pull request</b><span>A CI valida de novo e quem mantém revisa. A cada mudança, o campo <span class="mono">version</span> do item sobe.</span></li>
+        <li><b>Depois do merge</b><span>A CI assina o índice e publica. A entrada aparece aqui e no app só a partir daí.</span></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="marca" href="./"><img src="icon.svg" alt="" width="20" height="20">Locum</a>
+    <span>Feito para quem cuida de um time de engenharia.</span>
+    <span class="espaco" style="flex:1"></span>
+    <a href="https://github.com/locumapp/locum-marketplace">Catálogo no GitHub</a>
+    <a href="https://github.com/locumapp/locumapp.github.io/issues/new">Reportar um problema</a>
+    <a href="https://github.com/locumapp/locumapp.github.io/releases">Releases</a>
+    <span>Fontes Inter e IBM Plex Mono, licença OFL</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const CATALOGO = "locumapp/locum-marketplace";
+  const INDICE = `https://raw.githubusercontent.com/${CATALOGO}/index/index.json`;
+  const IDIOMA = document.documentElement.lang || "pt-BR";
+  const el = (tag, attrs = {}, ...filhos) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    for (const f of filhos) n.append(f);
+    return n;
+  };
+  const lista = (partes) => new Intl.ListFormat(IDIOMA, { type: "conjunction" }).format(partes);
+  const texto = (campo) => (campo && typeof campo === "object" ? campo[IDIOMA] ?? campo.en ?? "" : "");
+  const mono = (v) => el("span", { class: "mono" }, String(v));
+  // Lista de valores técnicos como texto corrido: "a, b e c", cada um em fonte de código.
+  const monos = (valores) => {
+    const frag = document.createDocumentFragment();
+    const partes = new Intl.ListFormat(IDIOMA, { type: "conjunction" }).formatToParts(valores.map(String));
+    for (const p of partes) frag.append(p.type === "element" ? mono(p.value) : p.value);
+    return frag;
+  };
+
+  // Nomes legíveis para o que o índice traz como id. Id que não está aqui aparece como veio.
+  const NOMES_CONEXAO = { github: "GitHub", slack: "Slack", teams: "Microsoft Teams", grafana: "Grafana", argocd: "Argo CD", atlassian: "Atlassian", linear: "Linear", notion: "Notion", sentry: "Sentry", figma: "Figma" };
+  const PROVEDORES = { "claude-code": "Assinatura do Claude Code", codex: "Assinatura do ChatGPT via Codex", anthropic: "Anthropic", openai: "OpenAI", google: "Google", ollama: "Ollama", openrouter: "OpenRouter" };
+  const GATILHOS = {
+    poll: "PR no GitHub, conferido de tempos em tempos",
+    "github-thread-reply": "Resposta numa thread de PR que o Locum abriu",
+    "slack-inbox": "Mensagem para você no Slack",
+    "slack-channel": "Mensagem num canal do Slack",
+    "teams-inbox": "Mensagem para você no Teams",
+    "mcp-poll": "Consulta periódica a um servidor MCP",
+    cron: "Horário marcado",
+    schedule: "Intervalo fixo",
+    webhook: "Chamada de webhook",
+    manual: "Quando você manda rodar",
+  };
+  const ESCOLHAS = { owner: "o dono (pessoa ou organização)", repoMatch: "os repositórios", myUserId: "o seu usuário no Slack", chats: "as conversas do Teams", channels: "os canais", path: "o caminho" };
+  const ACOES = {
+    "github.review_comment": "Publica a review no PR",
+    "github.review_reply": "Responde numa thread de PR",
+    "github.resolve_thread": "Resolve a thread do PR",
+    "github.react": "Reage a um comentário no GitHub",
+    "github.checks_wait": "Espera a esteira do PR terminar",
+    "tracker.create_issue": "Abre uma tarefa",
+    "digest.deliver": "Entrega um resumo na inbox do app",
+    "slack.post": "Posta no Slack",
+    "slack.react": "Reage a uma mensagem no Slack",
+    "teams.post": "Manda mensagem no Teams",
+    "teams.react": "Reage a uma mensagem no Teams",
+    "context.update": "Atualiza o contexto da iniciativa",
+    "memory.propose": "Propõe uma nota para a memória",
+    "mcp.call": "Chama uma ferramenta de um servidor MCP",
+    "http.request": "Faz uma chamada HTTP",
+  };
+  const METODOS = {
+    oauth: "Login pelo navegador (OAuth)",
+    token: "Token de acesso",
+    cli: "Credencial de uma ferramenta de linha de comando",
+    session: "Sessão que você já tem aberta",
+    none: "Sem login",
+  };
+  const LEITORES = { gh: "GitHub CLI", "browser-cookie": "no navegador", "slack-desktop": "no app do Slack" };
+
+  const nomeConexao = (id, porId) => texto(porId.get(id)?.name) || NOMES_CONEXAO[id] || id;
+  const comFallback = (mapa, id) => (Object.hasOwn(mapa, id) ? mapa[id] : mono(id));
+
+  const linhas = (valores, rotulo) => {
+    const ul = el("ul");
+    for (const v of valores) ul.append(el("li", {}, rotulo(v)));
+    return ul;
+  };
+
+  // O que um template ou pacote pede, em frases para quem não é técnico.
+  const pedeAutomacao = (r, porId) => {
+    const out = [];
+    const gatilhos = r.triggers ?? [];
+    if (gatilhos.length) out.push(["Quando roda", linhas(gatilhos, (g) => {
+      const frag = document.createDocumentFragment();
+      frag.append(comFallback(GATILHOS, g.kind));
+      const escolhe = (g.choose ?? []).map((c) => ESCOLHAS[c] ?? c);
+      if (escolhe.length) frag.append(`. Na instalação você escolhe ${lista(escolhe)}.`);
+      return frag;
+    })]);
+    if (r.connections?.length) out.push(["Conexões", lista(r.connections.map((c) => nomeConexao(c, porId)))]);
+    if (r.servers?.length) out.push(["Servidores MCP", el("span", {}, monos(r.servers), r.servers.length > 1 ? ", com esses nomes" : ", com esse nome")]);
+    if (r.providers?.length) out.push(["Modelos", linhas(r.providers, (p) => {
+      const frag = document.createDocumentFragment();
+      frag.append(PROVEDORES[p.provider] ?? p.provider);
+      if (p.models?.length) frag.append(": ", monos(p.models));
+      return frag;
+    })]);
+    if (r.skills?.length) out.push(["Skills", monos(r.skills)]);
+    if (r.actions?.length) out.push(["Ações", linhas(r.actions, (a) => comFallback(ACOES, a))]);
+    return out;
+  };
+
+  const servidor = (s) => {
+    if (s.remote?.url) {
+      let host = s.remote.url;
+      try { host = new URL(s.remote.url).hostname; } catch {}
+      return el("span", {}, "Servidor remoto em ", mono(host));
+    }
+    if (s.remote?.urlField) return "Servidor remoto no endereço que você informar";
+    if (s.local?.image) return el("span", {}, "Servidor local, imagem ", mono(s.local.image));
+    if (s.local?.package) return el("span", {}, "Servidor local, pacote npm ", mono(s.local.package));
+    return null;
+  };
+
+  // O que um tipo de conexão pede.
+  const pedeConexao = (r) => {
+    const out = [];
+    const s = r.servers ?? {};
+    const servidores = [servidor({ remote: s.remote }), servidor({ local: s.local })].filter(Boolean);
+    if (servidores.length) out.push(["Servidor", linhas(servidores, (v) => v)]);
+    if (r.hosts?.length) out.push(["Endereços que acessa", monos(r.hosts)]);
+    if (r.methods?.length) out.push(["Como entra", linhas(r.methods, (m) => {
+      const base = METODOS[m.type] ?? m.type;
+      return m.reader ? `${base} (${LEITORES[m.reader] ?? m.reader})` : base;
+    })]);
+    if (r.scopes?.length) out.push(["Permissões pedidas", monos(r.scopes)]);
+    if (r.fields?.length) out.push(["Você preenche", monos(r.fields)]);
+    if (r.triggers?.length) out.push(["Gatilhos que oferece", linhas(r.triggers, (g) => comFallback(GATILHOS, g))]);
+    if (r.actions?.length) out.push(["Ações que oferece", linhas(r.actions, (a) => comFallback(ACOES, a))]);
+    if (r.writeTools?.length) out.push(["Ferramentas que escrevem fora", monos(r.writeTools)]);
+    return out;
+  };
+
+  const ARQUIVO = /^(templates|packages|connections)\/[a-z0-9-]+\.json$/;
+  const COMMIT = /^[0-9a-f]{40}$/;
+
+  const cartao = (item, commit, porId) => {
+    const nome = texto(item.name) || item.id;
+    const titulo = `item-${item.kind}-${item.id}`;
+    const meta = [`Versão ${item.version}`, item.minAppVersion ? `pede o Locum ${item.minAppVersion} ou mais novo` : "qualquer versão do Locum"];
+    const art = el("article", { class: "item", "aria-labelledby": titulo },
+      el("div", {}, el("h3", { id: titulo }, nome), el("p", { class: "meta num" }, `${meta.join(" · ")} · `, mono(item.id))));
+    const descricao = texto(item.description);
+    if (descricao) art.append(el("p", { class: "descricao" }, descricao));
+    if (item.tags?.length) {
+      const chips = linhas(item.tags, (t) => t);
+      chips.className = "chips";
+      chips.setAttribute("aria-label", "Etiquetas");
+      art.append(chips);
+    }
+    const pede = item.kind === "connection" ? pedeConexao(item.requires ?? {}) : pedeAutomacao(item.requires ?? {}, porId);
+    const dl = el("dl", { class: "pede", "aria-label": "O que pede" });
+    for (const [rotulo, valor] of pede) dl.append(el("div", {}, el("dt", {}, rotulo), el("dd", {}, valor)));
+    if (!pede.length) dl.append(el("div", {}, el("dt", {}, "Pede"), el("dd", {}, "Nada além do app.")));
+    art.append(dl);
+    if (COMMIT.test(commit) && ARQUIVO.test(item.path ?? "")) {
+      art.append(el("a", { class: "link fonte", href: `https://github.com/${CATALOGO}/blob/${commit}/${item.path}` }, `Ver o arquivo de ${nome} no catálogo`));
+    }
+    return art;
+  };
+
+  const VAZIO = {
+    template: "Nenhum template publicado ainda.",
+    package: "Nenhum pacote publicado ainda.",
+    connection: "Nenhuma conexão publicada ainda. A primeira chega por pull request no repositório do catálogo, do jeito que a seção abaixo explica.",
+  };
+  const contar = (n, um, varios, nenhum) => (n === 0 ? nenhum : n === 1 ? `1 ${um}` : `${n} ${varios}`);
+
+  const alvos = () => document.querySelectorAll("[data-lista]");
+
+  fetch(INDICE)
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((indice) => {
+      if (indice?.format !== "locum-marketplace-index" || !Array.isArray(indice.items)) return Promise.reject("formato");
+      const itens = indice.items.filter((i) => i && typeof i.id === "string" && typeof i.kind === "string");
+      const porId = new Map(itens.filter((i) => i.kind === "connection").map((i) => [i.id, i]));
+      const porTipo = { template: [], package: [], connection: [] };
+      for (const i of itens) porTipo[i.kind]?.push(i);
+      for (const lista of Object.values(porTipo)) lista.sort((a, b) => (texto(a.name) || a.id).localeCompare(texto(b.name) || b.id, IDIOMA));
+      for (const alvo of alvos()) {
+        const tipo = alvo.dataset.lista;
+        alvo.textContent = "";
+        alvo.removeAttribute("aria-busy");
+        const deste = porTipo[tipo] ?? [];
+        if (!deste.length) { alvo.append(el("p", { class: "vazio" }, VAZIO[tipo])); continue; }
+        const grade = el("div", { class: "itens" });
+        for (const i of deste) grade.append(cartao(i, indice.commit, porId));
+        alvo.append(grade);
+      }
+      for (const c of document.querySelectorAll("[data-contagem]")) c.textContent = String(porTipo[c.dataset.contagem]?.length ?? 0);
+      const quando = Number.isSafeInteger(indice.committedAt)
+        ? new Date(indice.committedAt * 1000).toLocaleDateString(IDIOMA, { day: "numeric", month: "long", year: "numeric" })
+        : null;
+      const partes = [
+        contar(porTipo.template.length, "template", "templates", "nenhum template"),
+        contar(porTipo.package.length, "pacote", "pacotes", "nenhum pacote"),
+        contar(porTipo.connection.length, "conexão", "conexões", "nenhuma conexão"),
+      ];
+      const resumo = document.getElementById("resumo");
+      const frase = lista(partes);
+      resumo.textContent = `${frase[0].toLocaleUpperCase(IDIOMA)}${frase.slice(1)} no índice${quando ? ` publicado em ${quando}` : ""}${COMMIT.test(indice.commit ?? "") ? `, commit ${indice.commit.slice(0, 7)}` : ""}.`;
+    })
+    .catch(() => {
+      document.getElementById("resumo").textContent = "O catálogo não carregou. Confira a conexão e recarregue a página.";
+      for (const alvo of alvos()) {
+        alvo.textContent = "";
+        alvo.removeAttribute("aria-busy");
+        alvo.append(el("p", { class: "vazio erro" }, "Não deu para buscar o índice do catálogo. Confira a conexão e recarregue a página, ou ",
+          el("a", { class: "link", href: INDICE }, "abra o índice direto no GitHub"), "."));
+      }
+    });
+})();
+</script>
+</body>
+</html>
