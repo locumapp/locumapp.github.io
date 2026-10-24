@@ -86,41 +86,94 @@ header.nav { position: sticky; top: 0; z-index: 5; background: oklch(0.155 0.004
 .btn-secundario:hover { background: var(--accent); }
 
 /* Topo da página */
-.topo { padding: 72px 0 48px; }
+.topo { padding: 56px 0 28px; }
 .rotulo { font: 500 12px/1 var(--mono); color: var(--primary-texto); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 14px; }
-h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; margin: 0 0 18px; max-width: 18ch; text-wrap: balance; }
-.topo p.lead { font-size: clamp(17px, 2vw, 19px); color: var(--muted-foreground); max-width: 640px; margin: 0 0 24px; text-wrap: pretty; }
-.resumo { font-size: 14px; color: var(--muted-foreground); min-height: 22px; margin: 0; }
-.atalhos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-.atalhos a { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: 14px; color: oklch(0.85 0.006 275); text-decoration: none; }
-.atalhos a:hover { background: var(--secondary); }
-.atalhos .contagem { color: var(--muted-foreground); margin-left: 6px; }
+h1 { font-size: clamp(30px, 4vw, 42px); line-height: 1.08; letter-spacing: -.035em; font-weight: 600; margin: 0 0 14px; text-wrap: balance; }
+.topo p.lead { font-size: 17px; color: var(--muted-foreground); max-width: 640px; margin: 0 0 6px; text-wrap: pretty; }
+.resumo { font-size: 13px; color: var(--muted-foreground); min-height: 20px; margin: 0; }
+
+/* Barra de busca e filtro, presa embaixo da navegação */
+.barra { position: sticky; top: 56px; z-index: 4; background: oklch(0.155 0.004 275 / 88%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.barra .wrap { display: flex; gap: 12px; align-items: center; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+.busca { position: relative; flex: 1 1 260px; max-width: 360px; }
+.busca svg { position: absolute; left: 10px; top: 50%; translate: 0 -50%; width: 15px; height: 15px; color: var(--muted-foreground); pointer-events: none; }
+.busca input { width: 100%; height: 34px; padding: 0 10px 0 32px; border-radius: var(--radius); border: 1px solid var(--input); background: var(--card); color: var(--foreground); font: 400 14px/1 "Inter", sans-serif; }
+.busca input::placeholder { color: var(--muted-foreground); }
+.filtro { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--border); }
+.filtro button { height: 28px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-foreground); font: 500 13px/1 "Inter", sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.filtro button:hover { color: var(--foreground); }
+.filtro button[aria-pressed="true"] { background: var(--secondary); color: var(--foreground); }
+.filtro .contagem { font: 400 12px/1 var(--mono); color: var(--muted-foreground); }
+.barra .publicar { margin-left: auto; font-size: 13px; }
 
 /* Seções */
-section.bloco { padding: 72px 0; border-top: 1px solid var(--border); }
-h2 { font-size: clamp(26px, 3.2vw, 34px); line-height: 1.12; letter-spacing: -.03em; font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
-.intro { color: var(--muted-foreground); max-width: 640px; margin: 0 0 32px; font-size: 17px; text-wrap: pretty; }
-.vazio { color: var(--muted-foreground); font-size: 15px; border: 1px dashed var(--input); border-radius: 12px; padding: 22px 24px; margin: 0; }
+section.bloco { padding: 36px 0 8px; }
+section.bloco:last-of-type { padding-bottom: 56px; }
+section.bloco[hidden] { display: none; }
+/* A navegação e a barra ficam presas no topo: a âncora para abaixo delas. */
+section.bloco, section.publicar { scroll-margin-top: 112px; }
+.cabeca { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+h2 { font-size: 20px; line-height: 1.2; letter-spacing: -.02em; font-weight: 600; margin: 0; }
+.cabeca .contagem { font: 400 13px/1 var(--mono); color: var(--muted-foreground); }
+.intro { color: var(--muted-foreground); max-width: 720px; margin: 0 0 16px; font-size: 14px; text-wrap: pretty; }
+.vazio { color: var(--muted-foreground); font-size: 14px; border: 1px dashed var(--input); border-radius: 10px; padding: 14px 16px; margin: 0; }
 .vazio.erro { border-style: solid; border-color: oklch(0.68 0.19 22 / 40%); color: var(--foreground); }
 
-/* Itens do catálogo */
-.itens { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
-.item h3 { font-size: 18px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
-.item .meta { margin: 4px 0 0; font-size: 13px; color: var(--muted-foreground); }
-.item .meta .mono { white-space: nowrap; }
-.item .descricao { margin: 0; color: oklch(0.85 0.006 275); font-size: 15px; text-wrap: pretty; }
+/* Itens do catálogo: cartão curto, o detalhe abre no diálogo */
+.itens { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.itens.conexoes { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.item { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; transition: border-color .15s, background .15s; }
+.item:hover { border-color: var(--input); background: oklch(0.2 0.006 275); }
+.item[hidden] { display: none; }
+.item .linha { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.item h3 { font-size: 14px; font-weight: 600; letter-spacing: -.005em; margin: 0; line-height: 1.3; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item h3 button { all: unset; cursor: pointer; }
+.item h3 button::after { content: ""; position: absolute; inset: 0; border-radius: 10px; }
+.item h3 button:focus-visible::after { outline: 2px solid var(--ring); outline-offset: 2px; }
+.item .id { font: 400 11.5px/1.3 var(--mono); color: var(--muted-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .descricao { margin: 0; color: oklch(0.8 0.006 275); font-size: 13px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.item .pe { margin-top: auto; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--muted-foreground); }
+.item .pe .logos { display: inline-flex; }
+.item .pe .logos .marca-logo { margin-right: -4px; box-shadow: 0 0 0 2px var(--card); }
+.item .pe .sep { opacity: .5; }
+
+.marca-logo { flex: none; display: inline-grid; place-items: center; border-radius: 7px; color: #fff; font-weight: 600; box-shadow: inset 0 0 0 1px oklch(1 0 0 / 10%); }
+.marca-logo svg { fill: #fff; }
+.marca-logo.g { width: 30px; height: 30px; font-size: 13px; }
+.marca-logo.g svg { width: 16px; height: 16px; }
+.marca-logo.p { width: 18px; height: 18px; border-radius: 5px; font-size: 10px; }
+.marca-logo.p svg { width: 11px; height: 11px; }
+.marca-logo.d { width: 40px; height: 40px; border-radius: 9px; font-size: 16px; }
+.marca-logo.d svg { width: 21px; height: 21px; }
+.marca-logo.automacao { background: oklch(0.3 0.08 285); color: var(--primary-texto); }
+.marca-logo.automacao svg { fill: none; stroke: currentColor; }
+
 .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; }
-.chips li { border: 1px solid var(--border); background: var(--muted); border-radius: 999px; padding: 2px 10px; font: 400 12px/1.7 var(--mono); color: var(--muted-foreground); }
+.chips li { border: 1px solid var(--border); background: var(--muted); border-radius: 999px; padding: 1px 9px; font: 400 12px/1.7 var(--mono); color: var(--muted-foreground); }
+
+/* Diálogo de detalhe */
+dialog.detalhe { width: min(620px, calc(100vw - 32px)); max-height: min(86vh, 820px); padding: 0; border: 1px solid var(--input); border-radius: 14px; background: var(--popover); color: var(--foreground); box-shadow: 0 24px 64px oklch(0 0 0 / 50%); }
+dialog.detalhe::backdrop { background: oklch(0 0 0 / 55%); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.detalhe .corpo { padding: 22px 24px 24px; display: grid; gap: 14px; }
+.detalhe .topo-detalhe { display: flex; gap: 14px; align-items: flex-start; }
+.detalhe h3 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+.detalhe .meta { margin: 2px 0 0; font-size: 13px; color: var(--muted-foreground); }
+.detalhe .fechar { margin-left: auto; flex: none; width: 30px; height: 30px; border-radius: 6px; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; display: grid; place-items: center; }
+.detalhe .fechar:hover { background: var(--accent); color: var(--foreground); }
+.detalhe .fechar svg { width: 16px; height: 16px; }
+.detalhe .descricao { margin: 0; color: oklch(0.86 0.006 275); font-size: 15px; text-wrap: pretty; }
 .pede { margin: 0; border-top: 1px solid var(--border); padding-top: 14px; display: grid; gap: 10px; }
 .pede div { display: grid; grid-template-columns: 150px 1fr; gap: 12px; }
-.pede dt { font: 500 12px/1.9 var(--mono); color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
+.pede dt { font: 500 11.5px/1.9 var(--mono); color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .04em; }
 .pede dd { margin: 0; font-size: 14px; }
 .pede dd ul { margin: 0; padding-left: 18px; }
 .pede .mono { color: oklch(0.85 0.006 275); }
-.item .fonte { margin-top: auto; font-size: 13px; }
+.detalhe .fonte { font-size: 13px; }
 
 /* Como publicar */
+section.publicar { padding: 72px 0; margin-top: 48px; border-top: 1px solid var(--border); }
+.publicar h2 { font-size: clamp(24px, 3vw, 30px); letter-spacing: -.03em; margin-bottom: 12px; }
+.publicar .intro { font-size: 16px; margin-bottom: 24px; }
 .dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
 ol.etapas { list-style: none; counter-reset: e; padding: 0; margin: 0; border-left: 1px solid var(--border); }
 ol.etapas li { counter-increment: e; position: relative; padding: 0 0 28px 32px; }
@@ -137,12 +190,16 @@ footer a { color: var(--muted-foreground); }
 footer a:hover { color: var(--foreground); }
 
 @media (max-width: 960px) {
-  .itens, .dupla { grid-template-columns: 1fr; }
+  .dupla { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
   .nav nav { display: none; }
-  .topo { padding-top: 48px; }
-  section.bloco { padding: 56px 0; }
+  .topo { padding-top: 40px; }
+  .busca { max-width: none; }
+  .filtro { width: 100%; }
+  section.bloco, section.publicar { scroll-margin-top: 156px; }
+  .filtro button { flex: 1; justify-content: center; padding: 0 4px; gap: 4px; font-size: 12.5px; }
+  .barra .publicar { display: none; }
   .pede div { grid-template-columns: 1fr; gap: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -153,6 +210,9 @@ footer a:hover { color: var(--foreground); }
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-busca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-automacao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/></symbol>
 </svg>
 
 <header class="nav">
@@ -177,43 +237,55 @@ footer a:hover { color: var(--foreground); }
     <div class="wrap">
       <div class="rotulo">Catálogo</div>
       <h1>O que dá para instalar no Locum.</h1>
-      <p class="lead">Templates de automação, pacotes e tipos de conexão do catálogo público. A lista vem do mesmo índice que o app lê, com o que cada item pede para rodar.</p>
+      <p class="lead">Templates de automação, pacotes e tipos de conexão do catálogo público, lidos do mesmo índice que o app usa. Clique num item para ver o que ele pede para rodar.</p>
       <p class="resumo num" id="resumo" aria-live="polite">Buscando o catálogo publicado…</p>
       <noscript><p class="resumo">Esta lista precisa de JavaScript. O índice também está no <a class="link" href="https://github.com/locumapp/locum-marketplace/tree/index">GitHub</a>.</p></noscript>
-      <nav class="atalhos" aria-label="Tipos de item">
-        <a href="#templates">Templates<span class="contagem num" data-contagem="template"></span></a>
-        <a href="#pacotes">Pacotes<span class="contagem num" data-contagem="package"></span></a>
-        <a href="#conexoes">Conexões<span class="contagem num" data-contagem="connection"></span></a>
-        <a href="#publicar">Como publicar</a>
-      </nav>
     </div>
   </section>
 
-  <section class="bloco" id="templates" aria-labelledby="titulo-templates">
+  <div class="barra">
     <div class="wrap">
-      <h2 id="titulo-templates">Templates</h2>
+      <label class="busca">
+        <svg aria-hidden="true"><use href="#i-busca"/></svg>
+        <input type="search" id="busca" placeholder="Buscar por nome, etiqueta ou id" aria-label="Buscar no catálogo" autocomplete="off">
+      </label>
+      <div class="filtro" role="group" aria-label="Tipo de item">
+        <button type="button" data-filtro="" aria-pressed="true">Tudo<span class="contagem num" data-contagem=""></span></button>
+        <button type="button" data-filtro="template" aria-pressed="false">Templates<span class="contagem num" data-contagem="template"></span></button>
+        <button type="button" data-filtro="package" aria-pressed="false">Pacotes<span class="contagem num" data-contagem="package"></span></button>
+        <button type="button" data-filtro="connection" aria-pressed="false">Conexões<span class="contagem num" data-contagem="connection"></span></button>
+      </div>
+      <a class="link publicar" href="#publicar">Como publicar um item</a>
+    </div>
+  </div>
+
+  <section class="bloco" id="templates" data-secao="template" aria-labelledby="titulo-templates">
+    <div class="wrap">
+      <div class="cabeca"><h2 id="titulo-templates">Templates</h2><span class="contagem num" data-visiveis="template"></span></div>
       <p class="intro">Automação já montada, com os nós à vista e editáveis. O que é seu, como repositórios, canais e conversas, você escolhe na instalação.</p>
       <div data-lista="template" aria-busy="true"></div>
     </div>
   </section>
 
-  <section class="bloco" id="pacotes" aria-labelledby="titulo-pacotes">
+  <section class="bloco" id="pacotes" data-secao="package" aria-labelledby="titulo-pacotes">
     <div class="wrap">
-      <h2 id="titulo-pacotes">Pacotes</h2>
+      <div class="cabeca"><h2 id="titulo-pacotes">Pacotes</h2><span class="contagem num" data-visiveis="package"></span></div>
       <p class="intro">Automação que alguém exportou do Locum e compartilhou, já limpa de dado de empresa.</p>
       <div data-lista="package" aria-busy="true"></div>
     </div>
   </section>
 
-  <section class="bloco" id="conexoes" aria-labelledby="titulo-conexoes">
+  <section class="bloco" id="conexoes" data-secao="connection" aria-labelledby="titulo-conexoes">
     <div class="wrap">
-      <h2 id="titulo-conexoes">Conexões</h2>
+      <div class="cabeca"><h2 id="titulo-conexoes">Conexões</h2><span class="contagem num" data-visiveis="connection"></span></div>
       <p class="intro">Tipos de conexão descritos só como dado: o servidor, o jeito de entrar e o que ele deixa ler e escrever. Nenhum traz código para rodar na sua máquina.</p>
       <div data-lista="connection" aria-busy="true"></div>
     </div>
   </section>
 
-  <section class="bloco" id="publicar" aria-labelledby="titulo-publicar">
+  <dialog class="detalhe" id="detalhe" aria-labelledby="detalhe-titulo"></dialog>
+
+  <section class="publicar" id="publicar" aria-labelledby="titulo-publicar">
     <div class="wrap dupla">
       <div>
         <div class="rotulo">Contribuir</div>
@@ -323,7 +395,12 @@ footer a:hover { color: var(--foreground); }
   // O que um template ou pacote pede, em frases para quem não é técnico.
   const pedeAutomacao = (r, porId) => {
     const out = [];
-    const gatilhos = r.triggers ?? [];
+    // Dois gatilhos do mesmo tipo e com as mesmas escolhas viram uma linha só.
+    const vistos = new Set();
+    const gatilhos = (r.triggers ?? []).filter((g) => {
+      const chave = `${g.kind}|${(g.choose ?? []).join(",")}`;
+      return vistos.has(chave) ? false : vistos.add(chave);
+    });
     if (gatilhos.length) out.push(["Quando roda", linhas(gatilhos, (g) => {
       const frag = document.createDocumentFragment();
       frag.append(comFallback(GATILHOS, g.kind));
@@ -378,30 +455,139 @@ footer a:hover { color: var(--foreground); }
   const ARQUIVO = /^(templates|packages|connections)\/[a-z0-9-]+\.json$/;
   const COMMIT = /^[0-9a-f]{40}$/;
 
-  const cartao = (item, commit, porId) => {
+  // Cor e logo de cada conexão, as mesmas do app (renderer/src/marcas.ts). Logos do Simple Icons, CC0 1.0.
+  const MARCAS = {"github":{"c":"181717","p":"M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"},"notion":{"c":"000000","p":"M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"},"atlassian":{"c":"0052CC","p":"M7.12 11.084a.683.683 0 00-1.16.126L.075 22.974a.703.703 0 00.63 1.018h8.19a.678.678 0 00.63-.39c1.767-3.65.696-9.203-2.406-12.52zM11.434.386a15.515 15.515 0 00-.906 15.317l3.95 7.9a.703.703 0 00.628.388h8.19a.703.703 0 00.63-1.017L12.63.38a.664.664 0 00-1.196.006z"},"slack":{"c":"4A154B"},"teams":{"c":"5059C9"},"grafana":{"c":"F46800","p":"M23.02 10.59a8.578 8.578 0 0 0-.862-3.034 8.911 8.911 0 0 0-1.789-2.445c.337-1.342-.413-2.505-.413-2.505-1.292-.08-2.113.4-2.416.62-.052-.02-.102-.044-.154-.064-.22-.089-.446-.172-.677-.247-.231-.073-.47-.14-.711-.197a9.867 9.867 0 0 0-.875-.161C14.557.753 12.94 0 12.94 0c-1.804 1.145-2.147 2.744-2.147 2.744l-.018.093c-.098.029-.2.057-.298.088-.138.042-.275.094-.413.143-.138.055-.275.107-.41.166a8.869 8.869 0 0 0-1.557.87l-.063-.029c-2.497-.955-4.716.195-4.716.195-.203 2.658.996 4.33 1.235 4.636a11.608 11.608 0 0 0-.607 2.635C1.636 12.677.953 15.014.953 15.014c1.926 2.214 4.171 2.351 4.171 2.351.003-.002.006-.002.006-.005.285.509.615.994.986 1.446.156.19.32.371.488.548-.704 2.009.099 3.68.099 3.68 2.144.08 3.553-.937 3.849-1.173a9.784 9.784 0 0 0 3.164.501h.08l.055-.003.107-.002.103-.005.003.002c1.01 1.44 2.788 1.646 2.788 1.646 1.264-1.332 1.337-2.653 1.337-2.94v-.058c0-.02-.003-.039-.003-.06.265-.187.52-.387.758-.6a7.875 7.875 0 0 0 1.415-1.7c1.43.083 2.437-.885 2.437-.885-.236-1.49-1.085-2.216-1.264-2.354l-.018-.013-.016-.013a.217.217 0 0 1-.031-.02c.008-.092.016-.18.02-.27.011-.162.016-.323.016-.48v-.253l-.005-.098-.008-.135a1.891 1.891 0 0 0-.01-.13c-.003-.042-.008-.083-.013-.125l-.016-.124-.018-.122a6.215 6.215 0 0 0-2.032-3.73 6.015 6.015 0 0 0-3.222-1.46 6.292 6.292 0 0 0-.85-.048l-.107.002h-.063l-.044.003-.104.008a4.777 4.777 0 0 0-3.335 1.695c-.332.4-.592.84-.768 1.297a4.594 4.594 0 0 0-.312 1.817l.003.091c.005.055.007.11.013.164a3.615 3.615 0 0 0 .698 1.82 3.53 3.53 0 0 0 1.827 1.282c.33.098.66.14.971.137.039 0 .078 0 .114-.002l.063-.003c.02 0 .041-.003.062-.003.034-.002.065-.007.099-.01.007 0 .018-.003.028-.003l.031-.005.06-.008a1.18 1.18 0 0 0 .112-.02c.036-.008.072-.013.109-.024a2.634 2.634 0 0 0 .914-.415c.028-.02.056-.041.085-.065a.248.248 0 0 0 .039-.35.244.244 0 0 0-.309-.06l-.078.042c-.09.044-.184.083-.283.116a2.476 2.476 0 0 1-.475.096c-.028.003-.054.006-.083.006l-.083.002c-.026 0-.054 0-.08-.002l-.102-.006h-.012l-.024.006c-.016-.003-.031-.003-.044-.006-.031-.002-.06-.007-.091-.01a2.59 2.59 0 0 1-.724-.213 2.557 2.557 0 0 1-.667-.438 2.52 2.52 0 0 1-.805-1.475 2.306 2.306 0 0 1-.029-.444l.006-.122v-.023l.002-.031c.003-.021.003-.04.005-.06a3.163 3.163 0 0 1 1.352-2.29 3.12 3.12 0 0 1 .937-.43 2.946 2.946 0 0 1 .776-.101h.06l.07.002.045.003h.026l.07.005a4.041 4.041 0 0 1 1.635.49 3.94 3.94 0 0 1 1.602 1.662 3.77 3.77 0 0 1 .397 1.414l.005.076.003.075c.002.026.002.05.002.075 0 .024.003.052 0 .07v.065l-.002.073-.008.174a6.195 6.195 0 0 1-.08.639 5.1 5.1 0 0 1-.267.927 5.31 5.31 0 0 1-.624 1.13 5.052 5.052 0 0 1-3.237 2.014 4.82 4.82 0 0 1-.649.066l-.039.003h-.287a6.607 6.607 0 0 1-1.716-.265 6.776 6.776 0 0 1-3.4-2.274 6.75 6.75 0 0 1-.746-1.15 6.616 6.616 0 0 1-.714-2.596l-.005-.083-.002-.02v-.056l-.003-.073v-.096l-.003-.104v-.07l.003-.163c.008-.22.026-.45.054-.678a8.707 8.707 0 0 1 .28-1.355c.128-.444.286-.872.473-1.277a7.04 7.04 0 0 1 1.456-2.1 5.925 5.925 0 0 1 .953-.763c.169-.111.343-.213.524-.306.089-.05.182-.091.273-.135.047-.02.093-.042.138-.062a7.177 7.177 0 0 1 .714-.267l.145-.045c.049-.015.098-.026.148-.041.098-.029.197-.052.296-.076.049-.013.1-.02.15-.033l.15-.032.151-.028.076-.013.075-.01.153-.024c.057-.01.114-.013.171-.023l.169-.021c.036-.003.073-.008.106-.01l.073-.008.036-.003.042-.002c.057-.003.114-.008.171-.01l.086-.006h.023l.037-.003.145-.007a7.999 7.999 0 0 1 1.708.125 7.917 7.917 0 0 1 2.048.68 8.253 8.253 0 0 1 1.672 1.09l.09.077.089.078c.06.052.114.107.171.159.057.052.112.106.166.16.052.055.107.107.159.164a8.671 8.671 0 0 1 1.41 1.978c.012.026.028.052.04.078l.04.078.075.156c.023.051.05.1.07.153l.065.15a8.848 8.848 0 0 1 .45 1.34.19.19 0 0 0 .201.142.186.186 0 0 0 .172-.184c.01-.246.002-.532-.024-.856z"},"figma":{"c":"F24E1E","p":"M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491zM12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117V7.51zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471H8.148zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981H8.148zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539zm-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019 1.705 0 3.093-1.376 3.093-3.068v-2.97H8.148zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49zm-.097-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-.098z"},"shortcut":{"c":"58B1E4","p":"M7.665.545H24L16.604 8.44l7.254 7.036-7.473 7.978L0 23.451l7.427-7.929L.202 8.514Zm1.095 16.27-4.476 4.78 9.406.002Zm7.19 4.387 5.304-5.663-5.92-5.742-5.304 5.663ZM14 8.503 8.11 2.788 2.805 8.452l5.892 5.714Zm1.27-1.356 4.445-4.745h-9.336Z"},"linear":{"c":"5E6AD2","p":"M2.886 4.18A11.982 11.982 0 0 1 11.99 0C18.624 0 24 5.376 24 12.009c0 3.64-1.62 6.903-4.18 9.105L2.887 4.18ZM1.817 5.626l16.556 16.556c-.524.33-1.075.62-1.65.866L.951 7.277c.247-.575.537-1.126.866-1.65ZM.322 9.163l14.515 14.515c-.71.172-1.443.282-2.195.322L0 11.358a12 12 0 0 1 .322-2.195Zm-.17 4.862 9.823 9.824a12.02 12.02 0 0 1-9.824-9.824Z"},"asana":{"c":"F06A6A","p":"M18.78 12.653c-2.882 0-5.22 2.336-5.22 5.22s2.338 5.22 5.22 5.22 5.22-2.34 5.22-5.22-2.336-5.22-5.22-5.22zm-13.56 0c-2.88 0-5.22 2.337-5.22 5.22s2.338 5.22 5.22 5.22 5.22-2.338 5.22-5.22-2.336-5.22-5.22-5.22zm12-6.525c0 2.883-2.337 5.22-5.22 5.22-2.882 0-5.22-2.337-5.22-5.22 0-2.88 2.338-5.22 5.22-5.22 2.883 0 5.22 2.34 5.22 5.22z"},"miro":{"c":"050038","p":"M17.392 0H13.9L17 4.808 10.444 0H6.949l3.102 6.3L3.494 0H0l3.05 8.131L0 24h3.494L10.05 6.985 6.949 24h3.494L17 5.494 13.899 24h3.493L24 3.672 17.392 0z"},"canva":{"c":"00C4CC"},"vercel":{"c":"000000","p":"m12 1.608 12 20.784H0Z"},"sentry":{"c":"362D59","p":"M13.91 2.505c-.873-1.448-2.972-1.448-3.844 0L6.904 7.92a15.478 15.478 0 0 1 8.53 12.811h-2.221A13.301 13.301 0 0 0 5.784 9.814l-2.926 5.06a7.65 7.65 0 0 1 4.435 5.848H2.194a.365.365 0 0 1-.298-.534l1.413-2.402a5.16 5.16 0 0 0-1.614-.913L.296 19.275a2.182 2.182 0 0 0 .812 2.999 2.24 2.24 0 0 0 1.086.288h6.983a9.322 9.322 0 0 0-3.845-8.318l1.11-1.922a11.47 11.47 0 0 1 4.95 10.24h5.915a17.242 17.242 0 0 0-7.885-15.28l2.244-3.845a.37.37 0 0 1 .504-.13c.255.14 9.75 16.708 9.928 16.9a.365.365 0 0 1-.327.543h-2.287c.029.612.029 1.223 0 1.831h2.297a2.206 2.206 0 0 0 1.922-3.31z"},"newrelic":{"c":"008C99","p":"M8.0015 14.3091v7.384L12.0008 24V12.0008L1.6078 5.9996v4.6167ZM12.0008 0 2.8232 5.2976 6.8209 7.606l5.1799-2.9893 6.3936 3.6913v7.384l-5.1783 2.9908v4.6167l9.176-5.2991V5.9996Z"},"amplitude":{"c":"1E61F0"},"posthog":{"c":"F54E00","p":"M9.854 14.5 5 9.647.854 5.5A.5.5 0 0 0 0 5.854V8.44a.5.5 0 0 0 .146.353L5 13.647l.147.146L9.854 18.5l.146.147v-.049c.065.03.134.049.207.049h2.586a.5.5 0 0 0 .353-.854L9.854 14.5zm0-5-4-4a.487.487 0 0 0-.409-.144.515.515 0 0 0-.356.21.493.493 0 0 0-.089.288V8.44a.5.5 0 0 0 .147.353l9 9a.5.5 0 0 0 .853-.354v-2.585a.5.5 0 0 0-.146-.354l-5-5zm1-4a.5.5 0 0 0-.854.354V8.44a.5.5 0 0 0 .147.353l4 4a.5.5 0 0 0 .853-.354V9.854a.5.5 0 0 0-.146-.354l-4-4zm12.647 11.515a3.863 3.863 0 0 1-2.232-1.1l-4.708-4.707a.5.5 0 0 0-.854.354v6.585a.5.5 0 0 0 .5.5H23.5a.5.5 0 0 0 .5-.5v-.6c0-.276-.225-.497-.499-.532zm-5.394.032a.8.8 0 1 1 0-1.6.8.8 0 0 1 0 1.6zM.854 15.5a.5.5 0 0 0-.854.354v2.293a.5.5 0 0 0 .5.5h2.293c.222 0 .39-.135.462-.309a.493.493 0 0 0-.109-.545L.854 15.501zM5 14.647.854 10.5a.5.5 0 0 0-.854.353v2.586a.5.5 0 0 0 .146.353L4.854 18.5l.146.147h2.793a.5.5 0 0 0 .353-.854L5 14.647z"},"intercom":{"c":"1F8DED","p":"M21 0H3C1.343 0 0 1.343 0 3v18c0 1.658 1.343 3 3 3h18c1.658 0 3-1.342 3-3V3c0-1.657-1.342-3-3-3zm-5.801 4.399c0-.44.36-.8.802-.8.44 0 .8.36.8.8v10.688c0 .442-.36.801-.8.801-.443 0-.802-.359-.802-.801V4.399zM11.2 3.994c0-.44.357-.799.8-.799s.8.359.8.799v11.602c0 .44-.357.8-.8.8s-.8-.36-.8-.8V3.994zm-4 .405c0-.44.359-.8.799-.8.443 0 .802.36.802.8v10.688c0 .442-.36.801-.802.801-.44 0-.799-.359-.799-.801V4.399zM3.199 6c0-.442.36-.8.802-.8.44 0 .799.358.799.8v7.195c0 .441-.359.8-.799.8-.443 0-.802-.36-.802-.8V6zM20.52 18.202c-.123.105-3.086 2.593-8.52 2.593-5.433 0-8.397-2.486-8.521-2.593-.335-.288-.375-.792-.086-1.128.285-.334.79-.375 1.125-.09.047.041 2.693 2.211 7.481 2.211 4.848 0 7.456-2.186 7.479-2.207.334-.289.839-.25 1.128.086.289.336.25.84-.086 1.128zm.281-5.007c0 .441-.36.8-.801.8-.441 0-.801-.36-.801-.8V6c0-.442.361-.8.801-.8.441 0 .801.357.801.8v7.195z"},"prelo":{"c":"1C1917","p":"M7 1h10a1 1 0 0 1 0 2h-3.4v2.5h-3.2V3H7a1 1 0 0 1 0-2zM4.6 6.5h14.8A1.6 1.6 0 0 1 21 8.1v2.3a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 10.4V8.1a1.6 1.6 0 0 1 1.6-1.6zM6.5 13h11v7.3l-1.375 1.375L14.75 20.3l-1.375 1.375L12 20.3l-1.375 1.375L9.25 20.3l-1.375 1.375L6.5 20.3zM9 15.2v1.2h4.4v-1.2zm0 2.5v1.2h6.4v-1.2z"},"proprio":{"c":"64748B"}};
+  const PALETA = ["334155", "0E7490", "4D7C0F", "A16207", "B45309", "BE123C", "7E22CE", "4338CA", "0F766E", "9F1239"];
+  const corEstavel = (nome) => {
+    let h = 0;
+    for (const c of nome.toLowerCase()) h = (h * 31 + c.codePointAt(0)) >>> 0;
+    return PALETA[h % PALETA.length];
+  };
+  const SVG = "http://www.w3.org/2000/svg";
+  const svg = (attrs, ...filhos) => {
+    const n = document.createElementNS(SVG, "svg");
+    n.setAttribute("viewBox", "0 0 24 24");
+    n.setAttribute("aria-hidden", "true");
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    for (const f of filhos) n.append(f);
+    return n;
+  };
+  const no = (tag, attrs) => {
+    const n = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+  // A marca do Slack não está no pacote: o mesmo desenho simples do app, quatro barras e pontos.
+  const hashDoSlack = () => svg({}, ...["#36C5F0", "#2EB67D", "#ECB22E", "#E01E5A"].map((cor, i) => {
+    const g = no("g", { fill: cor, transform: `rotate(${i * 90} 12 12)` });
+    g.append(no("rect", { x: "9", y: "2", width: "3.2", height: "8.4", rx: "1.6" }), no("circle", { cx: "5.2", cy: "10.6", r: "1.7" }));
+    return g;
+  }));
+  const logo = (id, nome, tamanho) => {
+    const m = MARCAS[id];
+    const caixa = el("span", { class: `marca-logo ${tamanho}`, "aria-hidden": "true" });
+    if (id === "slack") {
+      caixa.style.background = "#fff";
+      caixa.append(hashDoSlack());
+      return caixa;
+    }
+    caixa.style.background = `#${m?.c ?? corEstavel(nome)}`;
+    if (m?.p) caixa.append(svg({}, no("path", { d: m.p })));
+    else caixa.append((nome.trim().match(/[\p{L}\p{N}]/u)?.[0] ?? "?").toUpperCase());
+    return caixa;
+  };
+  const icone = (item, nome, tamanho) => {
+    if (item.kind === "connection") return logo(item.id, nome, tamanho);
+    const caixa = el("span", { class: `marca-logo automacao ${tamanho}`, "aria-hidden": "true" });
+    const u = no("use", { href: "#i-automacao" });
+    caixa.append(svg({}, u));
+    return caixa;
+  };
+
+  const METODO_CURTO = { oauth: "OAuth", token: "Token", cli: "CLI", session: "Sessão", none: "Sem login" };
+  const versaoMinima = (item) => (item.minAppVersion ? `Locum ${item.minAppVersion}+` : null);
+
+  // O que aparece no pé do cartão: para automação, as conexões que usa; para conexão, como entra e onde roda.
+  const pe = (item, porId) => {
+    const r = item.requires ?? {};
+    const frag = el("div", { class: "pe num" });
+    const partes = [];
+    if (item.kind === "connection") {
+      const metodos = [...new Set((r.methods ?? []).map((m) => METODO_CURTO[m.type] ?? m.type))];
+      if (metodos.length) partes.push(metodos.join(", "));
+      const s = r.servers ?? {};
+      if (s.remote) partes.push("remoto");
+      if (s.local) partes.push("local");
+    } else {
+      const conexoes = r.connections ?? [];
+      if (conexoes.length) {
+        const logos = el("span", { class: "logos", title: lista(conexoes.map((c) => nomeConexao(c, porId))) });
+        for (const c of conexoes) logos.append(logo(c, nomeConexao(c, porId), "p"));
+        frag.append(logos);
+        partes.push(lista(conexoes.map((c) => nomeConexao(c, porId))));
+      }
+    }
+    const minima = versaoMinima(item);
+    if (minima) partes.push(minima);
+    partes.forEach((p, i) => {
+      if (i) frag.append(el("span", { class: "sep" }, "·"));
+      frag.append(el("span", {}, p));
+    });
+    return frag;
+  };
+
+  const ancora = (item) => `item-${item.kind}-${item.id}`;
+  const semAcento = (t) => t.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+
+  const cartao = (item, abrir, porId) => {
     const nome = texto(item.name) || item.id;
-    const titulo = `item-${item.kind}-${item.id}`;
-    const meta = [`Versão ${item.version}`, item.minAppVersion ? `pede o Locum ${item.minAppVersion} ou mais novo` : "qualquer versão do Locum"];
-    const art = el("article", { class: "item", "aria-labelledby": titulo },
-      el("div", {}, el("h3", { id: titulo }, nome), el("p", { class: "meta num" }, `${meta.join(" · ")} · `, mono(item.id))));
+    const botao = el("button", { type: "button", "aria-haspopup": "dialog" }, nome);
+    botao.addEventListener("click", () => abrir(item, botao));
+    const art = el("article", { class: "item", id: ancora(item) },
+      el("div", { class: "linha" }, icone(item, nome, "g"), el("div", { style: "min-width:0" }, el("h3", {}, botao), el("div", { class: "id" }, item.id))));
     const descricao = texto(item.description);
     if (descricao) art.append(el("p", { class: "descricao" }, descricao));
+    art.append(pe(item, porId));
+    art.dataset.busca = semAcento([nome, item.id, descricao, ...(item.tags ?? []), ...(item.requires?.connections ?? [])].join(" "));
+    return art;
+  };
+
+  const detalhe = document.getElementById("detalhe");
+  let quemAbriu = null;
+  const preencherDetalhe = (item, commit, porId) => {
+    const nome = texto(item.name) || item.id;
+    detalhe.textContent = "";
+    const fechar = el("button", { type: "button", class: "fechar", "aria-label": "Fechar" });
+    fechar.append(svg({}, no("use", { href: "#i-fechar" })));
+    fechar.addEventListener("click", () => detalhe.close());
+    const meta = [`Versão ${item.version}`, item.minAppVersion ? `pede o Locum ${item.minAppVersion} ou mais novo` : "qualquer versão do Locum"];
+    const corpo = el("div", { class: "corpo" },
+      el("div", { class: "topo-detalhe" }, icone(item, nome, "d"),
+        el("div", {}, el("h3", { id: "detalhe-titulo" }, nome), el("p", { class: "meta num" }, `${meta.join(" · ")} · `, mono(item.id))),
+        fechar));
+    const descricao = texto(item.description);
+    if (descricao) corpo.append(el("p", { class: "descricao" }, descricao));
     if (item.tags?.length) {
       const chips = linhas(item.tags, (t) => t);
       chips.className = "chips";
       chips.setAttribute("aria-label", "Etiquetas");
-      art.append(chips);
+      corpo.append(chips);
     }
     const pede = item.kind === "connection" ? pedeConexao(item.requires ?? {}) : pedeAutomacao(item.requires ?? {}, porId);
     const dl = el("dl", { class: "pede", "aria-label": "O que pede" });
     for (const [rotulo, valor] of pede) dl.append(el("div", {}, el("dt", {}, rotulo), el("dd", {}, valor)));
     if (!pede.length) dl.append(el("div", {}, el("dt", {}, "Pede"), el("dd", {}, "Nada além do app.")));
-    art.append(dl);
+    corpo.append(dl);
     if (COMMIT.test(commit) && ARQUIVO.test(item.path ?? "")) {
-      art.append(el("a", { class: "link fonte", href: `https://github.com/${CATALOGO}/blob/${commit}/${item.path}` }, `Ver o arquivo de ${nome} no catálogo`));
+      corpo.append(el("a", { class: "link fonte", href: `https://github.com/${CATALOGO}/blob/${commit}/${item.path}` }, `Ver o arquivo de ${nome} no catálogo`));
     }
-    return art;
+    detalhe.append(corpo);
   };
+  detalhe.addEventListener("click", (e) => { if (e.target === detalhe) detalhe.close(); });
+  detalhe.addEventListener("close", () => {
+    history.replaceState(null, "", location.pathname + location.search);
+    quemAbriu?.focus();
+  });
 
   const VAZIO = {
     template: "Nenhum template publicado ainda.",
@@ -412,6 +598,40 @@ footer a:hover { color: var(--foreground); }
 
   const alvos = () => document.querySelectorAll("[data-lista]");
 
+  // Busca e filtro por tipo. Seção com itens mas nenhum visível mostra que a busca não achou.
+  const estado = { tipo: "", termo: "" };
+  const aplicar = () => {
+    const termo = semAcento(estado.termo.trim());
+    for (const secao of document.querySelectorAll("[data-secao]")) {
+      const tipo = secao.dataset.secao;
+      secao.hidden = Boolean(estado.tipo) && estado.tipo !== tipo;
+      const cartoes = [...secao.querySelectorAll(".item")];
+      let visiveis = 0;
+      for (const c of cartoes) {
+        c.hidden = Boolean(termo) && !c.dataset.busca.includes(termo);
+        if (!c.hidden) visiveis++;
+      }
+      const contagem = secao.querySelector("[data-visiveis]");
+      if (contagem) contagem.textContent = cartoes.length ? (termo ? `${visiveis} de ${cartoes.length}` : String(cartoes.length)) : "";
+      let aviso = secao.querySelector(".sem-resultado");
+      if (cartoes.length && !visiveis) {
+        if (!aviso) {
+          aviso = el("p", { class: "vazio sem-resultado" });
+          secao.querySelector("[data-lista]").append(aviso);
+        }
+        aviso.textContent = `Nada aqui com “${estado.termo.trim()}”.`;
+      } else aviso?.remove();
+    }
+  };
+  document.getElementById("busca").addEventListener("input", (e) => { estado.termo = e.target.value; aplicar(); });
+  for (const b of document.querySelectorAll("[data-filtro]")) {
+    b.addEventListener("click", () => {
+      estado.tipo = b.dataset.filtro;
+      for (const o of document.querySelectorAll("[data-filtro]")) o.setAttribute("aria-pressed", String(o === b));
+      aplicar();
+    });
+  }
+
   fetch(INDICE)
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((indice) => {
@@ -421,17 +641,27 @@ footer a:hover { color: var(--foreground); }
       const porTipo = { template: [], package: [], connection: [] };
       for (const i of itens) porTipo[i.kind]?.push(i);
       for (const lista of Object.values(porTipo)) lista.sort((a, b) => (texto(a.name) || a.id).localeCompare(texto(b.name) || b.id, IDIOMA));
+      const abrir = (item, botao) => {
+        quemAbriu = botao ?? null;
+        preencherDetalhe(item, indice.commit, porId);
+        history.replaceState(null, "", `#${ancora(item)}`);
+        if (!detalhe.open) detalhe.showModal();
+      };
       for (const alvo of alvos()) {
         const tipo = alvo.dataset.lista;
         alvo.textContent = "";
         alvo.removeAttribute("aria-busy");
         const deste = porTipo[tipo] ?? [];
         if (!deste.length) { alvo.append(el("p", { class: "vazio" }, VAZIO[tipo])); continue; }
-        const grade = el("div", { class: "itens" });
-        for (const i of deste) grade.append(cartao(i, indice.commit, porId));
+        const grade = el("div", { class: tipo === "connection" ? "itens conexoes" : "itens" });
+        for (const i of deste) grade.append(cartao(i, abrir, porId));
         alvo.append(grade);
       }
-      for (const c of document.querySelectorAll("[data-contagem]")) c.textContent = String(porTipo[c.dataset.contagem]?.length ?? 0);
+      for (const c of document.querySelectorAll("[data-contagem]")) {
+        const tipo = c.dataset.contagem;
+        c.textContent = String(tipo ? porTipo[tipo]?.length ?? 0 : itens.filter((i) => porTipo[i.kind]).length);
+      }
+      aplicar();
       const quando = Number.isSafeInteger(indice.committedAt)
         ? new Date(indice.committedAt * 1000).toLocaleDateString(IDIOMA, { day: "numeric", month: "long", year: "numeric" })
         : null;
@@ -443,6 +673,9 @@ footer a:hover { color: var(--foreground); }
       const resumo = document.getElementById("resumo");
       const frase = lista(partes);
       resumo.textContent = `${frase[0].toLocaleUpperCase(IDIOMA)}${frase.slice(1)} no índice${quando ? ` publicado em ${quando}` : ""}${COMMIT.test(indice.commit ?? "") ? `, commit ${indice.commit.slice(0, 7)}` : ""}.`;
+      // Link direto para um item abre o detalhe dele.
+      const alvoDoLink = itens.find((i) => `#${ancora(i)}` === location.hash);
+      if (alvoDoLink) abrir(alvoDoLink, document.querySelector(`#${CSS.escape(ancora(alvoDoLink))} h3 button`));
     })
     .catch(() => {
       document.getElementById("resumo").textContent = "O catálogo não carregou. Confira a conexão e recarregue a página.";
