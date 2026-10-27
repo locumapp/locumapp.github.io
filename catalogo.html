@@ -131,6 +131,7 @@ h2 { font-size: 20px; line-height: 1.2; letter-spacing: -.02em; font-weight: 600
 .item h3 button::after { content: ""; position: absolute; inset: 0; border-radius: 10px; }
 .item h3 button:focus-visible::after { outline: 2px solid var(--ring); outline-offset: 2px; }
 .item .id { font: 400 11.5px/1.3 var(--mono); color: var(--muted-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.selo { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; padding: 0 7px; border: 1px solid oklch(0.55 0.2 285 / 45%); border-radius: 999px; background: oklch(0.55 0.2 285 / 12%); color: var(--primary-texto); font: 500 11px/1.6 var(--mono); vertical-align: 1px; white-space: nowrap; }
 .item .descricao { margin: 0; color: oklch(0.8 0.006 275); font-size: 13px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .item .pe { margin-top: auto; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--muted-foreground); }
 .item .pe .logos { display: inline-flex; }
@@ -539,16 +540,20 @@ footer a:hover { color: var(--foreground); }
   const ancora = (item) => `item-${item.kind}-${item.id}`;
   const semAcento = (t) => t.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
+  // A marca vem do índice assinado, que só a põe nos ids da lista dos mantenedores; o arquivo do item não a declara.
+  const OFICIAL = "Publicado pelos mantenedores";
+  const seloOficial = (item) => (item.official === true ? [el("span", { class: "selo", title: `${OFICIAL} do Locum` }, "mantenedores")] : []);
+
   const cartao = (item, abrir, porId) => {
     const nome = texto(item.name) || item.id;
     const botao = el("button", { type: "button", "aria-haspopup": "dialog" }, nome);
     botao.addEventListener("click", () => abrir(item, botao));
     const art = el("article", { class: "item", id: ancora(item) },
-      el("div", { class: "linha" }, icone(item, nome, "g"), el("div", { style: "min-width:0" }, el("h3", {}, botao), el("div", { class: "id" }, item.id))));
+      el("div", { class: "linha" }, icone(item, nome, "g"), el("div", { style: "min-width:0" }, el("h3", {}, botao), el("div", { class: "id" }, item.id, ...seloOficial(item)))));
     const descricao = texto(item.description);
     if (descricao) art.append(el("p", { class: "descricao" }, descricao));
     art.append(pe(item, porId));
-    art.dataset.busca = semAcento([nome, item.id, descricao, ...(item.tags ?? []), ...(item.requires?.connections ?? [])].join(" "));
+    art.dataset.busca = semAcento([nome, item.id, descricao, ...(item.official === true ? ["mantenedores", "oficial"] : []), ...(item.tags ?? []), ...(item.requires?.connections ?? [])].join(" "));
     return art;
   };
 
@@ -560,7 +565,7 @@ footer a:hover { color: var(--foreground); }
     const fechar = el("button", { type: "button", class: "fechar", "aria-label": "Fechar" });
     fechar.append(svg({}, no("use", { href: "#i-fechar" })));
     fechar.addEventListener("click", () => detalhe.close());
-    const meta = [`Versão ${item.version}`, item.minAppVersion ? `pede o Locum ${item.minAppVersion} ou mais novo` : "qualquer versão do Locum"];
+    const meta = [...(item.official === true ? [OFICIAL] : []), `Versão ${item.version}`, item.minAppVersion ? `pede o Locum ${item.minAppVersion} ou mais novo` : "qualquer versão do Locum"];
     const corpo = el("div", { class: "corpo" },
       el("div", { class: "topo-detalhe" }, icone(item, nome, "d"),
         el("div", {}, el("h3", { id: "detalhe-titulo" }, nome), el("p", { class: "meta num" }, `${meta.join(" · ")} · `, mono(item.id))),
